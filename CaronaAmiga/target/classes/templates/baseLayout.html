@@ -1,0 +1,17 @@
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(pageTitle, content)">
+
+<!-- This is a base layout template for Thymeleaf-->
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{app.title}">App Placeholder</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+
+<body>
+    <footer th:fragment="footer">
+        <p>&copy; 2026 Carona Amiga. All rights reserved.</p>
+        <p th:text="#{app.contact}">Contact Placeholder</p>
+    </footer>
+</body>
+</html>
