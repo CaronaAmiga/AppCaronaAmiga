@@ -1,0 +1,147 @@
+/* 
+   Academic Vitality - Stylesheet
+   Generated for Carona Amiga Universitária
+*/
+
+:root {
+  /* Surface Colors */
+  --color-surface: #fff8f5;
+  --color-surface-dim: #e2d8d2;
+  --color-surface-bright: #fff8f5;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #fcf2eb;
+  --color-surface-container: #f6ece6;
+  --color-surface-container-high: #f0e6e0;
+  --color-surface-container-highest: #ebe1db;
+
+  /* On Surface Colors */
+  --color-on-surface: #201a17;
+  --color-on-surface-variant: #53433a;
+  --color-outline: #85736b;
+  --color-outline-variant: #d8c2b9;
+
+  /* Primary Branding (Academic Orange/Brown) */
+  --color-primary: #ea580c;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #ffdbcc;
+  --color-on-primary-container: #351000;
+
+  /* Secondary/Tertiary Accents */
+  --color-secondary: #451a03;
+  --color-on-secondary: #ffffff;
+  --color-tertiary: #fef3c7;
+  --color-on-tertiary: #201a17;
+
+  /* Typography Scale */
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+
+  /* Spacing & Shapes */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  --margin-desktop: 48px;
+  --margin-mobile: 20px;
+}
+
+/* Global Resets & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography Utility Classes */
+h1, .h1 { font-size: var(--text-4xl); font-weight: 700; color: var(--color-on-surface); line-height: 1.2; }
+h2, .h2 { font-size: var(--text-3xl); font-weight: 700; color: var(--color-on-surface); }
+h3, .h3 { font-size: var(--text-2xl); font-weight: 600; color: var(--color-on-surface); }
+p { font-size: var(--text-base); color: var(--color-on-surface-variant); }
+
+/* Components Style */
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.btn-primary:hover {
+  filter: brightness(0.9);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-primary-container);
+}
+
+/* Cards */
+.card {
+  background-color: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Layout Utilities */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--margin-mobile);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--margin-desktop);
+  }
+}
+
+/* Form Elements */
+.input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-outline-variant);
+  background-color: var(--color-surface-container-low);
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
