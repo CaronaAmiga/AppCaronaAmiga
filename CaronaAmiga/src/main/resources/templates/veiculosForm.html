@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastrar Veículo</title>
+</head>
+<body>
+
+    <h1>Novo Veículo</h1>
+
+    <!-- O formulário aponta para /veiculos via POST, e mapeia o DTO 'produto' -->
+    <form th:action="@{/veiculos}" th:object="${veiculo}" method="POST">
+        
+        <div>
+            <label for="modelo">Modelo do Veículo:</label>
+            <!-- th:field mapeia para a propriedade 'modelo' do ProdutoRequest -->
+            <input type="text" id="modelo" th:field="*{modelo}" required />
+        </div>
+        
+        <div>
+            <label for="cor">Cor do Veículo:</label>
+            <!-- th:field mapeia para a propriedade 'cor' do ProdutoRequest -->
+            <input type="text" id="cor" th:field="*{cor}" required />
+        </div>
+
+        <div>
+            <label for="placa">Placa do Veículo:</label>
+            <!-- th:field mapeia para a propriedade 'placa' do ProdutoRequest -->
+            <input type="text" id="placa" th:field="*{placa}" required />
+        </div>
+
+        <div>
+            <label for="descricao">Quantidad de Vagas:</label>
+            <!-- th:field mapeia para a propriedade 'quantidadeVagas' do ProdutoRequest -->
+            <input type="number" id="quantidadeVagas th:field="*{quantidadeVagas" required />
+        </div>
+
+        <button type="submit">Salvar Veiculo</button>
+        
+    </form>
+
+</body>
+</html>

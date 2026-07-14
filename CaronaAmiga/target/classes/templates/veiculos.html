@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Veículos</title>
+</head>
+<body>
+
+    <h1>Veículos Cadastrados</h1>
+    
+    <a href="/veiculos/novo">Cadastrar Novo Veículo</a>
+
+    <table border="1" style="margin-top: 20px; width: 50%; text-align: left;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Modelo</th>
+                <th>Cor</th>
+                <th>Placa</th>
+                <th>Quantidade de Vagas</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Itera sobre a lista de entidades Produto enviada pelo Controller -->
+            <tr th:each="veiculo : ${veiculos}">
+                <td th:text="${veiculo.id}">UUID</td>
+                <td th:text="${veiculo.modelo}">Modelo</td>
+                <td th:text="${veiculo.cor}">Cor</td>
+                <td th:text="${veiculo.placa}">Placa</td>
+                <td th:text="${veiculo.quantidadeVagas}">Quantidade de Vagas</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(veiculos)}">
+                <td colspan="3" style="text-align: center;">Nenhum veículo cadastrado.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
