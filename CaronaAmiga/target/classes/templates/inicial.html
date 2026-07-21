@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+    <!--Exemplo de uso Fragmentos-->
+    <head th:replace="baseLayout :: head">
+    </head>
+
+    <body>
+        <h1 th:text="#{app.title}">Exemplo HTML Spring</h1>
+        <p>Este é um exemplo de página HTML servida por um controlador Spring</p>
+        <h2>ID: <span th:text="${id}">ID Placeholder</span></h2>
+        <p>Parametros do Request:</p>
+        <ul>
+            <li>Parametro: <span th:text="${var1}">Parametro Placeholder</span></li>
+        </ul>
+
+        <!--Exemplo de uso Fragmentos-->
+        <footer th:replace="~{baseLayout :: footer}"></footer>
+    </body>
+</html>
