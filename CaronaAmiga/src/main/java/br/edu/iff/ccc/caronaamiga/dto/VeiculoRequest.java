@@ -1,12 +1,14 @@
 package br.edu.iff.ccc.caronaamiga.dto;
 
 public class VeiculoRequest {
+    private long id;
     private String modelo;
     private String cor;
     private String placa;
     private int quantidadeVagas;
 
-    public VeiculoRequest(String modelo, String cor, String placa, int quantidadeVagas) {
+    public VeiculoRequest(long id, String modelo, String cor, String placa, int quantidadeVagas) {
+        this.id = id;
         this.modelo = modelo;
         this.cor = cor;
         this.placa = placa;
@@ -14,6 +16,14 @@ public class VeiculoRequest {
     }
 
     public VeiculoRequest() {
+    }
+
+    public long getId(){
+        return id;
+    }
+
+    public void setId(long id){
+        this.id = id;
     }
 
     public String getModelo() {

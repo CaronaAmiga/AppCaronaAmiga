@@ -1,31 +1,39 @@
 package br.edu.iff.ccc.caronaamiga.entities;
 
-import java.util.UUID;
-
 public class Veiculo {
 
-    private UUID id;
+    private long id;
     private String modelo;
     private String cor;
     private String placa;
     private int quantidadeVagas;
+    private Usuario motorista;
 
-    public Veiculo(UUID id, String modelo, String cor, String placa, int quantidadeVagas) {
+    public Veiculo(long id, String modelo, String cor, String placa, int quantidadeVagas, Usuario motorista) {
         this.id = id;
         this.modelo = modelo;
         this.cor = cor;
         this.placa = placa;
         this.quantidadeVagas = quantidadeVagas;
+        this.motorista = motorista;
     }   
 
     public Veiculo() {
+
     }
 
-    public UUID getId() {
+    public void atualizarDados(String modelo, String cor, String placa, int quantidadeVagas){
+        this.modelo = modelo;
+        this.cor = cor;
+        this.placa = placa;
+        this.quantidadeVagas = quantidadeVagas;
+    }
+
+    public long getId() {
         return id;
     }
     
-    public void setId(UUID id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -53,11 +61,19 @@ public class Veiculo {
         this.placa = placa;
     }
 
-    public int GetQuantidadeVagas(){
+    public int getQuantidadeVagas(){
         return quantidadeVagas;
     }
 
     public void setQuantidadeVagas(int quantidadeVagas){
         this.quantidadeVagas = quantidadeVagas;
+    }
+
+    public Usuario getMotorista(){
+        return motorista;
+    }
+
+    public void setMotorista(Usuario motorista){
+        this.motorista = motorista;
     }
 }

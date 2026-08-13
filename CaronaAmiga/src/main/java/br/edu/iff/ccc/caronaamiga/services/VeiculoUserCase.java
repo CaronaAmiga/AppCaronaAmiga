@@ -1,6 +1,5 @@
 package br.edu.iff.ccc.caronaamiga.services;
 
-import java.util.UUID;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -22,9 +21,7 @@ public class VeiculoUserCase {
     public void criarVeiculo(br.edu.iff.ccc.caronaamiga.dto.VeiculoRequest veiculo) {
         // Lógica para criar um produto
 
-        // Gerar um ID único para o produto, seguir critérios especificados (ex: UUID, sequência numérica, etc.)
-        UUID id = UUID.randomUUID();
-        Veiculo novoVeiculo = new Veiculo(id, veiculo.getModelo(), veiculo.getCor(), veiculo.getPlaca(), veiculo.getQuantidadeVagas());
+        Veiculo novoVeiculo = new Veiculo(veiculo.getId(), veiculo.getModelo(), veiculo.getCor(), veiculo.getPlaca(), veiculo.getQuantidadeVagas());
         this.veiculoRepositorio.salvar(novoVeiculo);
     } 
 
@@ -40,9 +37,8 @@ public class VeiculoUserCase {
         // Lógica para buscar um produto
     }
 
-    public List<> listarVeiculo() {
-        List<> veiculos = new List<>();
-        return veiculos;
+    public List<Veiculo> listarVeiculo() {
+        return this.veiculoRepositorio.listar();
     }
 
     public void validarVeiculo() {

@@ -21,6 +21,10 @@ public class VeiculoRepositorio {
         System.out.println("Veículo salvo: " + veiculo.getPlaca());
     }
 
+    public List<Veiculo> listar() {
+        return new ArrayList<>(this.veiculos);
+    }
+
     public Veiculo buscarPorId(String id) {
         // Lógica para buscar um Veículo pelo ID no repositório
        return null; // Retornar o Veículo encontrado ou null se não encontrado
