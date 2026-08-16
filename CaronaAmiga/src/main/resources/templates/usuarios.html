@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários Cadastrados - Carona Amiga</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <!-- Navbar Padrão -->
+    <header th:replace="~{baseLayout :: navbar('usuarios')}">
+        <div class="navbar-inner">
+            <a href="/" class="brand-logo"><i class="fa-solid fa-car-side"></i> Carona Amiga</a>
+            <nav class="nav-menu">
+                <a href="/"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="/caronas"><i class="fa-solid fa-car"></i> Caronas</a>
+                <a href="/caronas/nova"><i class="fa-solid fa-plus"></i> Oferecer Carona</a>
+                <a href="/solicitacoes"><i class="fa-solid fa-inbox"></i> Solicitações</a>
+                <a href="/veiculos"><i class="fa-solid fa-car"></i> Veículos</a>
+                <a href="/usuarios" class="active"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a href="/avaliacoes"><i class="fa-solid fa-star"></i> Avaliações</a>
+                <a href="/historico"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                <a href="/mensagens"><i class="fa-solid fa-comments"></i> Mensagens</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <h1><i class="fa-solid fa-users"></i> Alunos e Usuários Cadastrados</h1>
+                <p>Gerenciamento da comunidade acadêmica no Carona Amiga.</p>
+            </div>
+            <a href="/usuarios/novo" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i> Novo Usuário</a>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome Completo</th>
+                        <th>E-mail Institucional</th>
+                        <th>Matrícula</th>
+                        <th>Telefone</th>
+                        <th>Reputação</th>
+                        <th>Perfil Ativo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="usuario : ${usuarios}">
+                        <td th:text="${usuario.id}">1</td>
+                        <td><strong th:text="${usuario.nome}">Nome</strong></td>
+                        <td th:text="${usuario.emailInstitucional}">email@iff.edu.br</td>
+                        <td th:text="${usuario.matricula}">2024001</td>
+                        <td th:text="${usuario.telefone}">(22) 99999-9999</td>
+                        <td>
+                            <span style="font-weight: 700; color: #D97706;">
+                                <span th:text="${usuario.reputacao}">5.0</span>
+                                <i class="fa-solid fa-star" style="color: #D97706;"></i>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge" 
+                                  th:classappend="${usuario.perfilAtivo.name() == 'MOTORISTA' ? 'badge-info' : 'badge-warning'}"
+                                  th:text="${usuario.perfilAtivo}">
+                                MOTORISTA
+                            </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/usuarios/{id}(id=${usuario.id})}" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.82rem; margin-right: 4px;">
+                                <i class="fa-solid fa-user"></i> Ver Perfil
+                            </a>
+                            <a th:href="@{/usuarios/{id}/editar(id=${usuario.id})}" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.82rem; margin-right: 4px;">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </a>
+                            <form th:action="@{/usuarios/{id}/excluir(id=${usuario.id})}" method="POST" style="display:inline;" onsubmit="return confirm('Deseja realmente excluir este usuário?');">
+                                <button type="submit" class="btn-link danger" style="font-size: 0.85rem;"><i class="fa-solid fa-trash-can"></i> Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(usuarios)}">
+                        <td colspan="8" style="text-align: center; color: var(--neutral); padding: 30px;">
+                            Nenhum usuário cadastrado.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer th:replace="~{baseLayout :: footer}">
+        <p>&copy; 2026 Carona Amiga Universitária - Projeto Acadêmico P1</p>
+    </footer>
+
+</body>
+</html>

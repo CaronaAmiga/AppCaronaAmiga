@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Viagens - Carona Amiga</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <!-- Navbar Padrão -->
+    <header th:replace="~{baseLayout :: navbar('historico')}">
+        <div class="navbar-inner">
+            <a href="/" class="brand-logo"><i class="fa-solid fa-car-side"></i> Carona Amiga</a>
+            <nav class="nav-menu">
+                <a href="/"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="/caronas"><i class="fa-solid fa-car"></i> Caronas</a>
+                <a href="/caronas/nova"><i class="fa-solid fa-plus"></i> Oferecer Carona</a>
+                <a href="/solicitacoes"><i class="fa-solid fa-inbox"></i> Solicitações</a>
+                <a href="/veiculos"><i class="fa-solid fa-car"></i> Veículos</a>
+                <a href="/usuarios"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a href="/avaliacoes"><i class="fa-solid fa-star"></i> Avaliações</a>
+                <a href="/historico" class="active"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                <a href="/mensagens"><i class="fa-solid fa-comments"></i> Mensagens</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div style="margin-bottom: 24px;">
+            <h1><i class="fa-solid fa-clock-rotate-left"></i> Histórico de Viagens Concluídas</h1>
+            <p>Registro de viagens realizadas e participações registradas no campus.</p>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Data & Horário</th>
+                        <th>Aluno Participante</th>
+                        <th>Trajeto da Carona</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="h : ${historicos}">
+                        <td th:text="${h.id}">1</td>
+                        <td th:text="${#temporals.format(h.dataParticipacao, 'dd/MM/yyyy HH:mm')}">14/08/2026 19:30</td>
+                        <td><strong th:if="${h.usuario != null}" th:text="${h.usuario.nome}">Carlos Silva</strong></td>
+                        <td>
+                            <span th:if="${h.carona != null}">
+                                <strong th:text="${h.carona.origem}">Centro</strong> ➔ 
+                                <strong th:text="${h.carona.destino}">IFF Guarus</strong>
+                                (Rateio: R$ <span th:text="${#numbers.formatDecimal(h.carona.valorRateio, 1, 2)}">5.00</span>)
+                            </span>
+                        </td>
+                        <td>
+                            <form th:action="@{/historico/{id}/excluir(id=${h.id})}" method="POST" style="display:inline;" onsubmit="return confirm('Remover registro do histórico?');">
+                                <button type="submit" class="btn-link danger" style="font-size: 0.85rem;"><i class="fa-solid fa-trash-can"></i> Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(historicos)}">
+                        <td colspan="5" style="text-align: center; color: var(--neutral); padding: 30px;">
+                            Nenhuma viagem registrada no histórico.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer th:replace="~{baseLayout :: footer}">
+        <p>&copy; 2026 Carona Amiga Universitária - Projeto Acadêmico P1</p>
+    </footer>
+
+</body>
+</html>

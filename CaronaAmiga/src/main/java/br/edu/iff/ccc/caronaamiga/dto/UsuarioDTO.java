@@ -1,34 +1,35 @@
-package br.edu.iff.ccc.caronaamiga.entities;
+package br.edu.iff.ccc.caronaamiga.dto;
 
-public class Usuario {
+import br.edu.iff.ccc.caronaamiga.entities.TipoPerfil;
+
+public class UsuarioDTO {
+
     private Long id;
     private String nome;
     private String emailInstitucional;
-    private String senhaHash;
+    private String senha;
     private String matricula;
     private String telefone;
-    private double reputacao;
     private TipoPerfil perfilAtivo;
 
-    public Usuario(Long id, String nome, String emailInstitucional, String senhaHash, String matricula, String telefone, double reputacao, TipoPerfil perfilAtivo){
+    
+    public UsuarioDTO(Long id, String nome, String emailInstitucional, String senha, String matricula, String telefone, TipoPerfil perfilAtivo) {
         this.id = id;
         this.nome = nome;
         this.emailInstitucional = emailInstitucional;
-        this.senhaHash = senhaHash;
+        this.senha = senha;
         this.matricula = matricula;
         this.telefone = telefone;
-        this.reputacao = reputacao;
         this.perfilAtivo = perfilAtivo;
     }
-
-    public Usuario(){
     
+    public UsuarioDTO() {
     }
-
+    
     public Long getId() {
         return id;
     }
-    
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -36,7 +37,7 @@ public class Usuario {
     public String getNome() {
         return nome;
     }
-    
+
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -44,23 +45,23 @@ public class Usuario {
     public String getEmailInstitucional() {
         return emailInstitucional;
     }
-    
+
     public void setEmailInstitucional(String emailInstitucional) {
         this.emailInstitucional = emailInstitucional;
     }
 
-    public String getSenhaHash() {
-        return senhaHash;
+    public String getSenha() {
+        return senha;
     }
-    
-    public void setSenhaHash(String senhaHash) {
-        this.senhaHash = senhaHash;
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
     public String getMatricula() {
         return matricula;
     }
-    
+
     public void setMatricula(String matricula) {
         this.matricula = matricula;
     }
@@ -68,34 +69,16 @@ public class Usuario {
     public String getTelefone() {
         return telefone;
     }
-    
+
     public void setTelefone(String telefone) {
         this.telefone = telefone;
-    }
-
-    public double getReputacao() {
-        return reputacao;
-    }
-    
-    public void setReputacao(double reputacao) {
-        this.reputacao = reputacao;
     }
 
     public TipoPerfil getPerfilAtivo() {
         return perfilAtivo;
     }
-    
+
     public void setPerfilAtivo(TipoPerfil perfilAtivo) {
         this.perfilAtivo = perfilAtivo;
-    }
-
-    public void alternarPerfil(){
-        if(this.perfilAtivo == TipoPerfil.MOTORISTA){
-            this.perfilAtivo = TipoPerfil.PASSAGEIRO;
-        }
-
-        else{
-            this.perfilAtivo = TipoPerfil.MOTORISTA;
-        }
     }
 }

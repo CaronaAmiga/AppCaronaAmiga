@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Solicitações - Carona Amiga</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <!-- Navbar Padrão -->
+    <header th:replace="~{baseLayout :: navbar('solicitacoes')}">
+        <div class="navbar-inner">
+            <a href="/" class="brand-logo"><i class="fa-solid fa-car-side"></i> Carona Amiga</a>
+            <nav class="nav-menu">
+                <a href="/"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="/caronas"><i class="fa-solid fa-car"></i> Caronas</a>
+                <a href="/caronas/nova"><i class="fa-solid fa-plus"></i> Oferecer Carona</a>
+                <a href="/solicitacoes" class="active"><i class="fa-solid fa-inbox"></i> Solicitações</a>
+                <a href="/veiculos"><i class="fa-solid fa-car"></i> Veículos</a>
+                <a href="/usuarios"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a href="/avaliacoes"><i class="fa-solid fa-star"></i> Avaliações</a>
+                <a href="/historico"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                <a href="/mensagens"><i class="fa-solid fa-comments"></i> Mensagens</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div style="margin-bottom: 24px;">
+            <h1><i class="fa-solid fa-inbox"></i> Painel de Solicitações de Vagas</h1>
+            <p>Gerencie e responda às solicitações de carona feitas pelos alunos.</p>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Carona Solicitada</th>
+                        <th>Motorista</th>
+                        <th>Passageiro Solicitante</th>
+                        <th>Data do Pedido</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="sol : ${solicitacoes}">
+                        <td th:text="${sol.id}">1</td>
+                        <td>
+                            <span th:if="${sol.carona != null}">
+                                <strong th:text="${sol.carona.origem}">Centro</strong> ➔ 
+                                <strong th:text="${sol.carona.destino}">IFF Guarus</strong>
+                                (<span th:text="${sol.carona.data}">2026-08-16</span>)
+                            </span>
+                        </td>
+                        <td>
+                            <span th:if="${sol.carona != null && sol.carona.motorista != null}" th:text="${sol.carona.motorista.nome}">Carlos Silva</span>
+                        </td>
+                        <td>
+                            <strong th:if="${sol.passageiro != null}" th:text="${sol.passageiro.nome}">Fernanda Costa</strong>
+                        </td>
+                        <td th:text="${#temporals.format(sol.dataSolicitacao, 'dd/MM/yyyy HH:mm')}">14/08/2026 20:00</td>
+                        <td>
+                            <span class="badge" 
+                                  th:classappend="${sol.status.name() == 'PENDENTE' ? 'badge-warning' : (sol.status.name() == 'ACEITA' ? 'badge-success' : 'badge-danger')}"
+                                  th:text="${sol.status}">
+                                PENDENTE
+                            </span>
+                        </td>
+                        <td>
+                            <!-- Ações de Aprovação / Recusa para o motorista quando estiver pendente -->
+                            <div th:if="${sol.status.name() == 'PENDENTE'}" style="display: flex; gap: 8px; align-items: center;">
+                                <form th:action="@{/solicitacoes/{id}/aprovar(id=${sol.id})}" method="POST">
+                                    <button type="submit" class="btn btn-success" style="padding: 6px 12px; font-size: 0.82rem;">
+                                        <i class="fa-solid fa-check"></i> Aprovar
+                                    </button>
+                                </form>
+                                <form th:action="@{/solicitacoes/{id}/recusar(id=${sol.id})}" method="POST">
+                                    <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.82rem;">
+                                        <i class="fa-solid fa-xmark"></i> Recusar
+                                    </button>
+                                </form>
+                            </div>
+
+                            <form th:action="@{/solicitacoes/{id}/excluir(id=${sol.id})}" method="POST" style="margin-top: 6px;" onsubmit="return confirm('Deseja excluir este registro de solicitação?');">
+                                <button type="submit" class="btn-link danger" style="font-size: 0.82rem;"><i class="fa-solid fa-trash-can"></i> Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(solicitacoes)}">
+                        <td colspan="7" style="text-align: center; color: var(--neutral); padding: 30px;">
+                            Nenhuma solicitação no momento.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer th:replace="~{baseLayout :: footer}">
+        <p>&copy; 2026 Carona Amiga Universitária - Projeto Acadêmico P1</p>
+    </footer>
+
+</body>
+</html>

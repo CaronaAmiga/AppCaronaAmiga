@@ -5,13 +5,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{app.title}">App Placeholder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/estilo.css}">
 </head>
 
 <body>
+    <!-- Navbar Padrão do Sistema -->
+    <header class="navbar" th:fragment="navbar(activeTab)">
+        <div class="navbar-inner">
+            <a href="/" class="brand-logo"><i class="fa-solid fa-car-side"></i> Carona Amiga</a>
+            <nav class="nav-menu">
+                <a href="/" th:classappend="${activeTab == 'inicio' ? 'active' : ''}"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="/caronas" th:classappend="${activeTab == 'caronas' ? 'active' : ''}"><i class="fa-solid fa-car"></i> Caronas</a>
+                <a href="/caronas/nova" th:classappend="${activeTab == 'novaCarona' ? 'active' : ''}"><i class="fa-solid fa-plus"></i> Oferecer Carona</a>
+                <a href="/solicitacoes" th:classappend="${activeTab == 'solicitacoes' ? 'active' : ''}"><i class="fa-solid fa-inbox"></i> Solicitações</a>
+                <a href="/veiculos" th:classappend="${activeTab == 'veiculos' ? 'active' : ''}"><i class="fa-solid fa-car"></i> Veículos</a>
+                <a href="/usuarios" th:classappend="${activeTab == 'usuarios' ? 'active' : ''}"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a href="/avaliacoes" th:classappend="${activeTab == 'avaliacoes' ? 'active' : ''}"><i class="fa-solid fa-star"></i> Avaliações</a>
+                <a href="/historico" th:classappend="${activeTab == 'historico' ? 'active' : ''}"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                <a href="/mensagens" th:classappend="${activeTab == 'mensagens' ? 'active' : ''}"><i class="fa-solid fa-comments"></i> Mensagens</a>
+            </nav>
+
+            <!-- Seletor de Usuário Ativo do Sistema -->
+            <div class="user-session-box" title="Usuário Ativo no Sistema">
+                <i class="fa-solid fa-circle-user"></i>
+                <select class="user-session-select" onchange="window.location.href='/selecionar-usuario?id=' + this.value + '&redirect=' + encodeURIComponent(window.location.pathname + window.location.search)">
+                    <option value="" disabled th:if="${usuarioLogado == null}">-- Selecionar Usuário --</option>
+                    <option th:each="u : ${todosUsuariosSessao}" 
+                            th:value="${u.id}" 
+                            th:selected="${usuarioLogado != null && usuarioLogado.id == u.id}"
+                            th:text="${u.nome} + ' (' + ${u.perfilAtivo} + ')'">
+                        Carlos Silva (MOTORISTA)
+                    </option>
+                </select>
+                <span class="badge" 
+                      th:if="${usuarioLogado != null}" 
+                      th:classappend="${usuarioLogado.perfilAtivo.name() == 'MOTORISTA' ? 'badge-info' : 'badge-warning'}"
+                      style="font-size: 0.72rem; padding: 2px 7px;"
+                      th:text="${usuarioLogado.perfilAtivo}">
+                    MOTORISTA
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Rodapé Padrão do Sistema -->
     <footer th:fragment="footer">
-        <p>&copy; 2026 Carona Amiga. All rights reserved.</p>
-        <p th:text="#{app.contact}">Contact Placeholder</p>
+        <p>&copy; 2026 Carona Amiga Universitária - Projeto Acadêmico P1</p>
+        <p style="font-size: 0.8rem; color: var(--neutral);">Ambiente seguro e exclusivo para comunidade universitária.</p>
     </footer>
 </body>
 </html>

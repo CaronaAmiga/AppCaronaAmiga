@@ -1,20 +1,162 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carona Amiga Universitária</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
 
-    <!--Exemplo de uso Fragmentos-->
-    <head th:replace="baseLayout :: head">
-    </head>
+    <!-- Navbar Padrão -->
+    <header th:replace="~{baseLayout :: navbar('inicio')}">
+        <div class="navbar-inner">
+            <a href="/" class="brand-logo"><i class="fa-solid fa-car-side"></i> Carona Amiga</a>
+            <nav class="nav-menu">
+                <a href="/" class="active"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="/caronas"><i class="fa-solid fa-car"></i> Caronas</a>
+                <a href="/caronas/nova"><i class="fa-solid fa-plus"></i> Oferecer Carona</a>
+                <a href="/solicitacoes"><i class="fa-solid fa-inbox"></i> Solicitações</a>
+                <a href="/veiculos"><i class="fa-solid fa-car"></i> Veículos</a>
+                <a href="/usuarios"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a href="/avaliacoes"><i class="fa-solid fa-star"></i> Avaliações</a>
+                <a href="/historico"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                <a href="/mensagens"><i class="fa-solid fa-comments"></i> Mensagens</a>
+            </nav>
+        </div>
+    </header>
 
-    <body>
-        <h1 th:text="#{app.title}">Exemplo HTML Spring</h1>
-        <p>Este é um exemplo de página HTML servida por um controlador Spring</p>
-        <h2>ID: <span th:text="${id}">ID Placeholder</span></h2>
-        <p>Parametros do Request:</p>
-        <ul>
-            <li>Parametro: <span th:text="${var1}">Parametro Placeholder</span></li>
-        </ul>
+    <main class="container">
+        
+        <!-- Banner de Usuário Conectado no Sistema -->
+        <div class="session-banner" th:if="${usuarioLogado != null}">
+            <div class="session-banner-info">
+                <i class="fa-solid fa-circle-user banner-avatar"></i>
+                <div>
+                    <div style="font-size: 0.85rem; color: var(--neutral);">Você está navegando como:</div>
+                    <div style="font-size: 1.1rem; font-weight: 700;">
+                        <span th:text="${usuarioLogado.nome}">Carlos Silva</span> 
+                        <span class="badge" 
+                              th:classappend="${usuarioLogado.perfilAtivo.name() == 'MOTORISTA' ? 'badge-info' : 'badge-warning'}"
+                              style="margin-left: 6px; font-size: 0.75rem;"
+                              th:text="${usuarioLogado.perfilAtivo}">
+                            MOTORISTA
+                        </span>
+                        <span style="font-size: 0.85rem; color: #D97706; margin-left: 8px;">
+                            <span th:text="${usuarioLogado.reputacao}">5.0</span> <i class="fa-solid fa-star"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="session-banner-actions">
+                <a th:href="@{/usuarios/{id}(id=${usuarioLogado.id})}" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.82rem;">
+                    <i class="fa-solid fa-user"></i> Meu Perfil
+                </a>
+                <form th:action="@{/usuarios/{id}/alternar-perfil(id=${usuarioLogado.id})}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.82rem;" title="Alternar entre Motorista e Passageiro">
+                        <i class="fa-solid fa-arrows-rotate"></i> Alternar Papel
+                    </button>
+                </form>
+            </div>
+        </div>
 
-        <!--Exemplo de uso Fragmentos-->
-        <footer th:replace="~{baseLayout :: footer}"></footer>
-    </body>
+        <!-- Hero Section (Inspirado no Wireframe Oficial) -->
+        <section class="hero-card">
+            <h1 class="hero-title">Economize no trajeto para a faculdade com caronas entre alunos.</h1>
+            <p class="hero-subtitle">
+                Plataforma segura e exclusiva para a comunidade acadêmica. Divida custos de combustível e viaje com conforto.
+            </p>
+            <div class="hero-buttons">
+                <a href="/caronas/nova" class="btn btn-primary"><i class="fa-solid fa-car"></i> QUERO DAR CARONA</a>
+                <a href="/caronas" class="btn btn-outline"><i class="fa-solid fa-magnifying-glass"></i> QUERO PEGAR CARONA</a>
+            </div>
+        </section>
+
+        <!-- Cards de Estatísticas do Sistema -->
+        <section class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                <div class="stat-number" th:text="${totalUsuarios}">2</div>
+                <div class="stat-label">Alunos Cadastrados</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon"><i class="fa-solid fa-car"></i></div>
+                <div class="stat-number" th:text="${totalVeiculos}">1</div>
+                <div class="stat-label">Veículos no Sistema</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon"><i class="fa-solid fa-route"></i></div>
+                <div class="stat-number" th:text="${totalCaronas}">1</div>
+                <div class="stat-label">Caronas Publicadas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon"><i class="fa-solid fa-inbox"></i></div>
+                <div class="stat-number" th:text="${totalSolicitacoes}">1</div>
+                <div class="stat-label">Pedidos de Vagas</div>
+            </div>
+        </section>
+
+        <!-- Tabela de Caronas Recentes -->
+        <section class="card">
+            <div class="card-header">
+                <h2><i class="fa-solid fa-route"></i> Próximas Caronas Disponíveis</h2>
+                <a href="/caronas" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85rem;">Ver Todas <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Trajeto</th>
+                            <th>Data & Horário</th>
+                            <th>Motorista</th>
+                            <th>Vagas</th>
+                            <th>Rateio</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : ${caronasRecentes}">
+                            <td>
+                                <strong th:text="${c.origem}">Centro</strong> ➔ 
+                                <strong th:text="${c.destino}">Campus IFF Guarus</strong>
+                            </td>
+                            <td>
+                                <span th:text="${c.data}">2026-08-16</span> às 
+                                <span th:text="${c.horarioPartida}">07:30</span>
+                            </td>
+                            <td>
+                                <span th:if="${c.motorista != null}" th:text="${c.motorista.nome}">Carlos Silva</span>
+                            </td>
+                            <td>
+                                <span style="font-weight: 700; color: #2563EB;" th:text="${c.vagasDisponiveis} + ' vagas'">3 vagas</span>
+                            </td>
+                            <td>
+                                <strong>R$ <span th:text="${#numbers.formatDecimal(c.valorRateio, 1, 2)}">5.00</span></strong>
+                            </td>
+                            <td>
+                                <a th:href="@{/caronas/{id}(id=${c.id})}" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">
+                                    Ver Detalhes
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(caronasRecentes)}">
+                            <td colspan="6" style="text-align: center; color: var(--neutral); padding: 30px;">
+                                Nenhuma carona agendada no momento. <a href="/caronas/nova">Que tal oferecer a primeira?</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer th:replace="~{baseLayout :: footer}">
+        <p>&copy; 2026 Carona Amiga Universitária - Projeto Acadêmico P1</p>
+        <p style="font-size: 0.8rem; color: var(--neutral);">Ambiente seguro e exclusivo para comunidade universitária.</p>
+    </footer>
+
+</body>
 </html>

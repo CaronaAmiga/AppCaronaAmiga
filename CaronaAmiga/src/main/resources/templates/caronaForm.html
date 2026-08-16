@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oferecer Carona - Carona Amiga</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <!-- Navbar Padrão -->
+    <header th:replace="~{baseLayout :: navbar('novaCarona')}">
+        <div class="navbar-inner">
+            <a href="/" class="brand-logo"><i class="fa-solid fa-car-side"></i> Carona Amiga</a>
+            <nav class="nav-menu">
+                <a href="/"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="/caronas"><i class="fa-solid fa-car"></i> Caronas</a>
+                <a href="/caronas/nova" class="active"><i class="fa-solid fa-plus"></i> Oferecer Carona</a>
+                <a href="/solicitacoes"><i class="fa-solid fa-inbox"></i> Solicitações</a>
+                <a href="/veiculos"><i class="fa-solid fa-car"></i> Veículos</a>
+                <a href="/usuarios"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a href="/avaliacoes"><i class="fa-solid fa-star"></i> Avaliações</a>
+                <a href="/historico"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                <a href="/mensagens"><i class="fa-solid fa-comments"></i> Mensagens</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- Aviso caso o usuário ativo atual seja Passageiro -->
+        <div class="session-banner" th:if="${usuarioLogado != null && usuarioLogado.perfilAtivo.name() == 'PASSAGEIRO'}" style="border-left-color: #D97706; max-width: 580px; margin: 0 auto 20px auto;">
+            <div class="session-banner-info">
+                <i class="fa-solid fa-circle-exclamation" style="font-size: 1.5rem; color: #D97706;"></i>
+                <div style="font-size: 0.88rem;">
+                    Você está navegando como <strong><span th:text="${usuarioLogado.nome}">Aluno</span> (Passageiro)</strong>. 
+                    Apenas usuários com perfil <strong>Motorista</strong> podem oferecer caronas.
+                </div>
+            </div>
+            <div class="session-banner-actions">
+                <form th:action="@{/usuarios/{id}/alternar-perfil(id=${usuarioLogado.id})}" method="POST">
+                    <button type="submit" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.82rem;">
+                        <i class="fa-solid fa-arrows-rotate"></i> Virar Motorista Agora
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="form-container" style="max-width: 580px;">
+            <h2 style="text-align: center; margin-bottom: 24px;"><i class="fa-solid fa-circle-plus"></i> Oferecer Nova Carona</h2>
+
+            <form th:action="@{/caronas}" th:object="${carona}" method="POST" id="formNovaCarona">
+                
+                <div class="form-group">
+                    <label for="motoristaId"><i class="fa-solid fa-user"></i> Motorista Condutor:</label>
+                    <select id="motoristaId" th:field="*{motoristaId}" required>
+                        <option value="">-- Selecione o Motorista --</option>
+                        <option th:each="user : ${motoristas}" 
+                                th:value="${user.id}" 
+                                th:selected="${usuarioLogado != null && usuarioLogado.id == user.id}"
+                                th:text="${user.nome} + ' (' + ${user.emailInstitucional} + ')'">
+                            Carlos Silva
+                        </option>
+                    </select>
+                    <small th:if="${#lists.isEmpty(motoristas)}" style="color: #DC2626; font-size: 0.8rem; margin-top: 4px; display: block;">
+                        Nenhum motorista cadastrado no sistema. <a href="/usuarios">Alterne um perfil para Motorista aqui</a>.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="veiculoId"><i class="fa-solid fa-car"></i> Veículo do Motorista:</label>
+                    <select id="veiculoId" th:field="*{veiculoId}" required>
+                        <option value="">-- Selecione o Veículo do Condutor --</option>
+                        <option th:each="v : ${veiculos}" 
+                                th:value="${v.id}" 
+                                th:attr="data-motorista-id=${v.motorista != null ? v.motorista.id : ''}, data-vagas=${v.quantidadeVagas}"
+                                th:text="${v.modelo} + ' - Placa: ' + ${v.placa} + ' (' + ${v.quantidadeVagas} + ' vagas)'">
+                            Fiat Uno
+                        </option>
+                    </select>
+                    
+                    <!-- Alerta caso o motorista selecionado não possua veículo cadastrado -->
+                    <div id="noVehicleAlert" style="display: none; margin-top: 8px; padding: 10px; background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: var(--radius-sm); font-size: 0.85rem; color: #991B1B;">
+                        <i class="fa-solid fa-circle-exclamation"></i> Este motorista não possui nenhum veículo cadastrado.
+                        <a href="/veiculos/novo" style="font-weight: 700; color: var(--primary); text-decoration: underline; margin-left: 4px;">Cadastrar Veículo Agora</a>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="origem"><i class="fa-solid fa-location-dot"></i> Local de Origem:</label>
+                        <input type="text" id="origem" th:field="*{origem}" required placeholder="Ex: Praça do Centro" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="destino"><i class="fa-solid fa-flag-checkered"></i> Campus / Destino:</label>
+                        <input type="text" id="destino" th:field="*{destino}" required placeholder="Ex: Campus IFF Guarus" />
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="data"><i class="fa-regular fa-calendar"></i> Data da Viagem:</label>
+                        <input type="date" id="data" th:field="*{data}" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="horarioPartida"><i class="fa-regular fa-clock"></i> Horário de Partida:</label>
+                        <input type="time" id="horarioPartida" th:field="*{horarioPartida}" required />
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="quilometragem"><i class="fa-solid fa-route"></i> Distância Estimada (Km):</label>
+                        <input type="number" step="0.1" id="quilometragem" th:field="*{quilometragem}" required placeholder="Ex: 15.0" />
+                        <small style="color: var(--neutral); font-size: 0.78rem;">Calcula rateio automático (RF-008)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vagasDisponiveis"><i class="fa-solid fa-users"></i> Vagas Oferecidas:</label>
+                        <input type="number" id="vagasDisponiveis" th:field="*{vagasDisponiveis}" min="1" max="8" placeholder="3" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="valorRateio"><i class="fa-solid fa-coins"></i> Valor do Rateio R$ (Opcional - Deixe 0 para cálculo automático):</label>
+                    <input type="number" step="0.50" id="valorRateio" th:field="*{valorRateio}" value="0" />
+                </div>
+
+                <div class="btn-group-center" style="margin-top: 25px;">
+                    <button type="submit" class="btn btn-primary" id="btnSubmitCarona"><i class="fa-solid fa-car"></i> Publicar Carona</button>
+                    <a href="/caronas" class="btn btn-outline">Cancelar</a>
+                </div>
+            </form>
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer th:replace="~{baseLayout :: footer}">
+        <p>&copy; 2026 Carona Amiga Universitária - Projeto Acadêmico P1</p>
+    </footer>
+
+    <!-- Script de Filtro Dinâmico de Veículos por Motorista (Abordagem A) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const motoristaSelect = document.getElementById('motoristaId');
+            const veiculoSelect = document.getElementById('veiculoId');
+            const noVehicleAlert = document.getElementById('noVehicleAlert');
+            const vagasInput = document.getElementById('vagasDisponiveis');
+            const btnSubmit = document.getElementById('btnSubmitCarona');
+
+            // Se o motorista estiver vazio mas tiver um usuário logado que é motorista, seleciona ele
+            if (!motoristaSelect.value) {
+                const options = Array.from(motoristaSelect.options);
+                const selectedOption = options.find(opt => opt.hasAttribute('selected') && opt.value !== "");
+                if (selectedOption) {
+                    motoristaSelect.value = selectedOption.value;
+                } else if (options.length > 1) {
+                    // Seleciona o primeiro motorista por conveniência
+                    motoristaSelect.selectedIndex = 1;
+                }
+            }
+
+            function filtrarVeiculos() {
+                const motoristaId = motoristaSelect.value;
+                const options = Array.from(veiculoSelect.options);
+                let matchingCount = 0;
+                let firstMatchingValue = null;
+                let firstMatchingVagas = null;
+
+                options.forEach((opt, index) => {
+                    if (index === 0) {
+                        opt.style.display = "";
+                        opt.disabled = false;
+                        return;
+                    }
+
+                    const optMotoristaId = opt.getAttribute('data-motorista-id');
+                    if (motoristaId && optMotoristaId === motoristaId) {
+                        opt.style.display = "";
+                        opt.disabled = false;
+                        matchingCount++;
+                        if (!firstMatchingValue) {
+                            firstMatchingValue = opt.value;
+                            firstMatchingVagas = opt.getAttribute('data-vagas');
+                        }
+                    } else {
+                        opt.style.display = "none";
+                        opt.disabled = true;
+                    }
+                });
+
+                // Verifica se a opção atualmente selecionada continua válida
+                const currentOpt = veiculoSelect.options[veiculoSelect.selectedIndex];
+                const isCurrentValid = currentOpt && !currentOpt.disabled && currentOpt.value !== "";
+
+                if (!motoristaId) {
+                    noVehicleAlert.style.display = "none";
+                    veiculoSelect.value = "";
+                    btnSubmit.disabled = false;
+                } else if (matchingCount === 0) {
+                    noVehicleAlert.style.display = "block";
+                    veiculoSelect.value = "";
+                    btnSubmit.disabled = true;
+                    btnSubmit.title = "Cadastre um veículo para este motorista antes de oferecer uma carona.";
+                } else {
+                    noVehicleAlert.style.display = "none";
+                    btnSubmit.disabled = false;
+                    btnSubmit.title = "";
+                    
+                    if (!isCurrentValid) {
+                        // Se o motorista tem apenas 1 carro, seleciona automaticamente
+                        if (matchingCount === 1 && firstMatchingValue) {
+                            veiculoSelect.value = firstMatchingValue;
+                            if (firstMatchingVagas && (!vagasInput.value || vagasInput.value === '0')) {
+                                vagasInput.value = firstMatchingVagas;
+                            }
+                        } else {
+                            veiculoSelect.value = "";
+                        }
+                    }
+                }
+            }
+
+            // Atualiza sugestão de vagas ao trocar de veículo
+            veiculoSelect.addEventListener('change', function() {
+                const selectedOpt = veiculoSelect.options[veiculoSelect.selectedIndex];
+                if (selectedOpt && selectedOpt.hasAttribute('data-vagas')) {
+                    const vagas = selectedOpt.getAttribute('data-vagas');
+                    if (vagas) {
+                        vagasInput.value = vagas;
+                    }
+                }
+            });
+
+            motoristaSelect.addEventListener('change', filtrarVeiculos);
+
+            // Executa na inicialização
+            filtrarVeiculos();
+        });
+    </script>
+
+</body>
+</html>

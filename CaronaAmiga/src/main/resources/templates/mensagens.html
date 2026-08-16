@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens Diretas - Carona Amiga</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <!-- Navbar Padrão -->
+    <header th:replace="~{baseLayout :: navbar('mensagens')}">
+        <div class="navbar-inner">
+            <a href="/" class="brand-logo"><i class="fa-solid fa-car-side"></i> Carona Amiga</a>
+            <nav class="nav-menu">
+                <a href="/"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="/caronas"><i class="fa-solid fa-car"></i> Caronas</a>
+                <a href="/caronas/nova"><i class="fa-solid fa-plus"></i> Oferecer Carona</a>
+                <a href="/solicitacoes"><i class="fa-solid fa-inbox"></i> Solicitações</a>
+                <a href="/veiculos"><i class="fa-solid fa-car"></i> Veículos</a>
+                <a href="/usuarios"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a href="/avaliacoes"><i class="fa-solid fa-star"></i> Avaliações</a>
+                <a href="/historico"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                <a href="/mensagens" class="active"><i class="fa-solid fa-comments"></i> Mensagens</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; align-items: start;">
+            
+            <!-- Painel de Envio de Mensagem (Esquerda) -->
+            <div class="card" style="box-shadow: var(--shadow-md);">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-paper-plane"></i> Enviar Mensagem</h3>
+                </div>
+                
+                <form th:action="@{/mensagens}" th:object="${mensagemDTO}" method="POST">
+                    <div class="form-group">
+                        <label for="remetenteId">Remetente (Você):</label>
+                        <select id="remetenteId" th:field="*{remetenteId}" required>
+                            <option value="">-- Selecione quem envia --</option>
+                            <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nome}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="destinatarioId">Destinatário (Para):</label>
+                        <select id="destinatarioId" th:field="*{destinatarioId}" required>
+                            <option value="">-- Selecione o Destinatário --</option>
+                            <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.nome}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="conteudo">Mensagem:</label>
+                        <textarea id="conteudo" th:field="*{conteudo}" required rows="3" placeholder="Combine o local exato de embarque..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+                        <i class="fa-solid fa-paper-plane"></i> Enviar Mensagem
+                    </button>
+                </form>
+            </div>
+
+            <!-- Tabela de Mensagens Recebidas/Enviadas (Direita) -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-comments"></i> Conversas Recentes</h3>
+                </div>
+                
+                <div class="table-wrapper" style="box-shadow: none; border: none; margin: 0;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>De ➔ Para</th>
+                                <th>Conteúdo</th>
+                                <th>Horário</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="m : ${mensagens}">
+                                <td>
+                                    <strong th:if="${m.remetente != null}" th:text="${m.remetente.nome}">Ana</strong>
+                                    ➔ 
+                                    <span th:if="${m.destinatario != null}" th:text="${m.destinatario.nome}">Carlos</span>
+                                </td>
+                                <td th:text="${m.conteudo}">Olá!</td>
+                                <td style="font-size: 0.8rem; color: var(--neutral);" th:text="${#temporals.format(m.dataHora, 'dd/MM HH:mm')}">14/08 19:30</td>
+                                <td>
+                                    <form th:action="@{/mensagens/{id}/excluir(id=${m.id})}" method="POST" style="display:inline;" onsubmit="return confirm('Excluir mensagem?');">
+                                        <button type="submit" class="btn-link danger" style="font-size: 0.85rem;" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(mensagens)}">
+                                <td colspan="4" style="text-align: center; color: var(--neutral); padding: 20px;">
+                                    Nenhuma mensagem trocada ainda.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer th:replace="~{baseLayout :: footer}">
+        <p>&copy; 2026 Carona Amiga Universitária - Projeto Acadêmico P1</p>
+    </footer>
+
+</body>
+</html>

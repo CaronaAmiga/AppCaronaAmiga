@@ -3,8 +3,10 @@ package br.edu.iff.ccc.caronaamiga.entities;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import org.springframework.asm.Label;
+
 public class Carona {
-    private long id;
+    private Long id;
     private String origem;
     private String destino;
     private LocalDate data;
@@ -16,7 +18,7 @@ public class Carona {
     private Usuario motorista;
     private Veiculo veiculo;
 
-    public Carona(long id, String origem, String destino, LocalDate data, LocalTime horarioPartida, double valorRateio, int vagasDisponiveis, double quilometragem, StatusCarona status, Usuario motorista, Veiculo veiculo){
+    public Carona(Long id, String origem, String destino, LocalDate data, LocalTime horarioPartida, double valorRateio, int vagasDisponiveis, double quilometragem, StatusCarona status, Usuario motorista, Veiculo veiculo){
         this.id = id;
         this.origem = origem;
         this.destino = destino;
@@ -34,11 +36,11 @@ public class Carona {
 
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

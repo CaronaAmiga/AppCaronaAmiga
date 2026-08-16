@@ -2,14 +2,14 @@ package br.edu.iff.ccc.caronaamiga.entities;
 
 public class Veiculo {
 
-    private long id;
+    private Long id;
     private String modelo;
     private String cor;
     private String placa;
     private int quantidadeVagas;
     private Usuario motorista;
 
-    public Veiculo(long id, String modelo, String cor, String placa, int quantidadeVagas, Usuario motorista) {
+    public Veiculo(Long id, String modelo, String cor, String placa, int quantidadeVagas, Usuario motorista) {
         this.id = id;
         this.modelo = modelo;
         this.cor = cor;
@@ -29,11 +29,11 @@ public class Veiculo {
         this.quantidadeVagas = quantidadeVagas;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
     
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

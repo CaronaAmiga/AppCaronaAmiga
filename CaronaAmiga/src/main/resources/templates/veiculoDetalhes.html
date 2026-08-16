@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Veículo - Carona Amiga</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <!-- Navbar Padrão -->
+    <header th:replace="~{baseLayout :: navbar('veiculos')}">
+        <div class="navbar-inner">
+            <a href="/" class="brand-logo"><i class="fa-solid fa-car-side"></i> Carona Amiga</a>
+            <nav class="nav-menu">
+                <a href="/"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="/caronas"><i class="fa-solid fa-car"></i> Caronas</a>
+                <a href="/caronas/nova"><i class="fa-solid fa-plus"></i> Oferecer Carona</a>
+                <a href="/solicitacoes"><i class="fa-solid fa-inbox"></i> Solicitações</a>
+                <a href="/veiculos" class="active"><i class="fa-solid fa-car"></i> Veículos</a>
+                <a href="/usuarios"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a href="/avaliacoes"><i class="fa-solid fa-star"></i> Avaliações</a>
+                <a href="/historico"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                <a href="/mensagens"><i class="fa-solid fa-comments"></i> Mensagens</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 580px;">
+        
+        <div class="card" style="padding: 32px;">
+            <div class="card-header">
+                <h2><i class="fa-solid fa-car"></i> Detalhes do Veículo</h2>
+                <span style="font-family: monospace; font-size: 1.1rem; font-weight: 700; background-color: var(--bg-page); padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);" th:text="${veiculo.placa}">
+                    ABC-1234
+                </span>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <p style="margin-bottom: 8px;"><strong>ID:</strong> <span th:text="${veiculo.id}">1</span></p>
+                <p style="margin-bottom: 8px;"><strong>Modelo:</strong> <span style="font-size: 1.1rem; font-weight: 700;" th:text="${veiculo.modelo}">Fiat Uno</span></p>
+                <p style="margin-bottom: 8px;"><strong>Cor:</strong> <span th:text="${veiculo.cor}">Prata</span></p>
+                <p style="margin-bottom: 8px;"><strong>Capacidade de Vagas:</strong> <strong style="color: #2563EB;" th:text="${veiculo.quantidadeVagas} + ' passageiros'">4 passageiros</strong></p>
+                <p style="margin-bottom: 8px;">
+                    <strong>Motorista Proprietário:</strong> 
+                    <span th:if="${veiculo.motorista != null}" th:text="${veiculo.motorista.nome}">Carlos Silva</span>
+                    <span th:if="${veiculo.motorista == null}" style="color: var(--neutral);">Nenhum motorista vinculado</span>
+                </p>
+            </div>
+
+            <div class="btn-group-center">
+                <a th:href="@{/veiculos/{id}/editar(id=${veiculo.id})}" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i> Editar Veículo</a>
+                <a href="/veiculos" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Voltar para Veículos</a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer th:replace="~{baseLayout :: footer}">
+        <p>&copy; 2026 Carona Amiga Universitária - Projeto Acadêmico P1</p>
+    </footer>
+
+</body>
+</html>

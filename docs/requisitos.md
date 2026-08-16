@@ -1,8 +1,8 @@
-## 📋 Requisitos do Projeto
+## Requisitos do Projeto
 
 Para garantir o escopo alinhado e o correto desenvolvimento da plataforma, foram levantados os seguintes requisitos divididos entre funcionais e não funcionais.
 
-### ⚙️ Requisitos Funcionais (RF)
+### Requisitos Funcionais (RF)
 
 *   **RF-001 [Cadastro de Usuário]:** O sistema deve permitir o cadastro de usuários exigindo nome, e-mail institucional, senha e matrícula acadêmica.
 *   **RF-002 [Gerenciamento de Perfil]:** O usuário deve poder alternar seu perfil ativo entre "Motorista" e "Passageiro" a qualquer momento dentro da plataforma.
@@ -15,7 +15,7 @@ Para garantir o escopo alinhado e o correto desenvolvimento da plataforma, foram
 *   **RF-009 [Sistema de Avaliação]:** Após a conclusão da viagem, tanto o motorista quanto o passageiro devem poder se avaliar mutuamente através de uma nota (1 a 5 estrelas) e comentário opcional.
 *   **RF-010 [Histórico de Viagens]:** O usuário deve ter acesso ao histórico de todas as caronas que ele ofereceu ou participou.
 
-### 🔒 Requisitos Não Funcionais (RNF)
+### Requisitos Não Funcionais (RNF)
 
 *   **RNF-001 [Segurança/Autenticação]:** O sistema deve criptografar as senhas dos usuários no banco de dados e gerenciar as sessões de forma seguras.
 *   **RNF-002 [Persistência de Dados]:** Todos os dados de usuários, veículos, rotas e históricos devem ser armazenados de forma relacional e segura em um banco de dados MySQL.

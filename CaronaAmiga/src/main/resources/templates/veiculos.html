@@ -2,38 +2,91 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Veículos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veículos Cadastrados - Carona Amiga</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
 </head>
 <body>
 
-    <h1>Veículos Cadastrados</h1>
-    
-    <a href="/veiculos/novo">Cadastrar Novo Veículo</a>
+    <!-- Navbar Padrão -->
+    <header th:replace="~{baseLayout :: navbar('veiculos')}">
+        <div class="navbar-inner">
+            <a href="/" class="brand-logo"><i class="fa-solid fa-car-side"></i> Carona Amiga</a>
+            <nav class="nav-menu">
+                <a href="/"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="/caronas"><i class="fa-solid fa-car"></i> Caronas</a>
+                <a href="/caronas/nova"><i class="fa-solid fa-plus"></i> Oferecer Carona</a>
+                <a href="/solicitacoes"><i class="fa-solid fa-inbox"></i> Solicitações</a>
+                <a href="/veiculos" class="active"><i class="fa-solid fa-car"></i> Veículos</a>
+                <a href="/usuarios"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a href="/avaliacoes"><i class="fa-solid fa-star"></i> Avaliações</a>
+                <a href="/historico"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                <a href="/mensagens"><i class="fa-solid fa-comments"></i> Mensagens</a>
+            </nav>
+        </div>
+    </header>
 
-    <table border="1" style="margin-top: 20px; width: 50%; text-align: left;">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Modelo</th>
-                <th>Cor</th>
-                <th>Placa</th>
-                <th>Quantidade de Vagas</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Itera sobre a lista de entidades Produto enviada pelo Controller -->
-            <tr th:each="veiculo : ${veiculos}">
-                <td th:text="${veiculo.id}">UUID</td>
-                <td th:text="${veiculo.modelo}">Modelo</td>
-                <td th:text="${veiculo.cor}">Cor</td>
-                <td th:text="${veiculo.placa}">Placa</td>
-                <td th:text="${veiculo.quantidadeVagas}">Quantidade de Vagas</td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(veiculos)}">
-                <td colspan="3" style="text-align: center;">Nenhum veículo cadastrado.</td>
-            </tr>
-        </tbody>
-    </table>
+    <main class="container">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <h1><i class="fa-solid fa-car"></i> Veículos Cadastrados</h1>
+                <p>Lista de veículos registrados pelos motoristas para as caronas.</p>
+            </div>
+            <a href="/veiculos/novo" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Cadastrar Novo Veículo</a>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Modelo</th>
+                        <th>Cor</th>
+                        <th>Placa</th>
+                        <th>Vagas</th>
+                        <th>Motorista / Proprietário</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="veiculo : ${veiculos}">
+                        <td th:text="${veiculo.id}">1</td>
+                        <td><strong th:text="${veiculo.modelo}">Fiat Uno</strong></td>
+                        <td th:text="${veiculo.cor}">Prata</td>
+                        <td><span style="font-family: monospace; font-weight: 700;" th:text="${veiculo.placa}">ABC-1234</span></td>
+                        <td><strong style="color: #2563EB;" th:text="${veiculo.quantidadeVagas} + ' vagas'">4 vagas</strong></td>
+                        <td>
+                            <span th:if="${veiculo.motorista != null}" th:text="${veiculo.motorista.nome}">Carlos Silva</span>
+                            <span th:if="${veiculo.motorista == null}" style="color: var(--neutral);">Sem vínculo</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/veiculos/{id}(id=${veiculo.id})}" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.82rem; margin-right: 4px;">
+                                <i class="fa-solid fa-circle-info"></i> Detalhes
+                            </a>
+                            <a th:href="@{/veiculos/{id}/editar(id=${veiculo.id})}" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.82rem; margin-right: 4px;">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </a>
+                            <form th:action="@{/veiculos/{id}/excluir(id=${veiculo.id})}" method="POST" style="display:inline;" onsubmit="return confirm('Deseja realmente excluir este veículo?');">
+                                <button type="submit" class="btn-link danger" style="font-size: 0.85rem;"><i class="fa-solid fa-trash-can"></i> Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(veiculos)}">
+                        <td colspan="7" style="text-align: center; color: var(--neutral); padding: 30px;">
+                            Nenhum veículo cadastrado.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer th:replace="~{baseLayout :: footer}">
+        <p>&copy; 2026 Carona Amiga Universitária - Projeto Acadêmico P1</p>
+    </footer>
 
 </body>
 </html>

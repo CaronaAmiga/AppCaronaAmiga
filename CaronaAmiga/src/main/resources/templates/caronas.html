@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Caronas - Carona Amiga</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+    <!-- Navbar Padrão -->
+    <header th:replace="~{baseLayout :: navbar('caronas')}">
+        <div class="navbar-inner">
+            <a href="/" class="brand-logo"><i class="fa-solid fa-car-side"></i> Carona Amiga</a>
+            <nav class="nav-menu">
+                <a href="/"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="/caronas" class="active"><i class="fa-solid fa-car"></i> Caronas</a>
+                <a href="/caronas/nova"><i class="fa-solid fa-plus"></i> Oferecer Carona</a>
+                <a href="/solicitacoes"><i class="fa-solid fa-inbox"></i> Solicitações</a>
+                <a href="/veiculos"><i class="fa-solid fa-car"></i> Veículos</a>
+                <a href="/usuarios"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a href="/avaliacoes"><i class="fa-solid fa-star"></i> Avaliações</a>
+                <a href="/historico"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</a>
+                <a href="/mensagens"><i class="fa-solid fa-comments"></i> Mensagens</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <h1><i class="fa-solid fa-car"></i> Caronas Disponíveis</h1>
+                <p>Encontre caronas compartilhadas com rotas e horários compatíveis.</p>
+            </div>
+            <a href="/caronas/nova" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Oferecer Nova Carona</a>
+        </div>
+
+        <!-- Formulário de Filtro por Destino (Estilo Search Bar) -->
+        <form action="/caronas" method="GET" class="search-container">
+            <div style="flex: 1; min-width: 260px;">
+                <label for="destino"><i class="fa-solid fa-magnifying-glass"></i> Filtrar por Destino (Campus / Bairro):</label>
+                <input type="text" id="destino" name="destino" th:value="${destinoPesquisado}" placeholder="Ex: Campus IFF Guarus, Centro, Shopping..." />
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+            <a href="/caronas" th:if="${destinoPesquisado != null && !destinoPesquisado.isBlank()}" class="btn btn-outline">Limpar Filtro</a>
+        </form>
+
+        <!-- Tabela de Caronas -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Trajeto (Origem ➔ Destino)</th>
+                        <th>Data & Horário</th>
+                        <th>Motorista</th>
+                        <th>Veículo</th>
+                        <th>Vagas</th>
+                        <th>Rateio</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="carona : ${caronas}">
+                        <td th:text="${carona.id}">1</td>
+                        <td>
+                            <strong th:text="${carona.origem}">Centro</strong> ➔ 
+                            <strong th:text="${carona.destino}">Campus IFF Guarus</strong>
+                        </td>
+                        <td>
+                            <span th:text="${carona.data}">2026-08-16</span> às 
+                            <span th:text="${carona.horarioPartida}">07:30</span>
+                        </td>
+                        <td>
+                            <span th:if="${carona.motorista != null}" th:text="${carona.motorista.nome}">Carlos Silva</span>
+                        </td>
+                        <td>
+                            <span th:if="${carona.veiculo != null}" th:text="${carona.veiculo.modelo} + ' (' + ${carona.veiculo.placa} + ')'">Fiat Uno</span>
+                        </td>
+                        <td>
+                            <span style="font-weight: 700; color: #2563EB;" th:text="${carona.vagasDisponiveis} + ' livres'">3 livres</span>
+                        </td>
+                        <td>
+                            <strong style="color: var(--primary-dark);">R$ <span th:text="${#numbers.formatDecimal(carona.valorRateio, 1, 2)}">5.00</span></strong>
+                        </td>
+                        <td>
+                            <span class="badge" 
+                                  th:classappend="${carona.status.name() == 'AGENDADA' ? 'badge-warning' : (carona.status.name() == 'EM_ANDAMENTO' ? 'badge-info' : (carona.status.name() == 'CONCLUIDA' ? 'badge-success' : 'badge-danger'))}"
+                                  th:text="${carona.status}">
+                                AGENDADA
+                            </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/caronas/{id}(id=${carona.id})}" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.82rem; margin-right: 6px;">
+                                <i class="fa-solid fa-circle-info"></i> Ver Detalhes
+                            </a>
+                            <form th:action="@{/caronas/{id}/excluir(id=${carona.id})}" method="POST" style="display:inline;" onsubmit="return confirm('Excluir carona?');">
+                                <button type="submit" class="btn-link danger" style="font-size: 0.85rem;"><i class="fa-solid fa-trash-can"></i> Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(caronas)}">
+                        <td colspan="9" style="text-align: center; color: var(--neutral); padding: 30px;">
+                            Nenhuma carona encontrada para o filtro pesquisado.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer th:replace="~{baseLayout :: footer}">
+        <p>&copy; 2026 Carona Amiga Universitária - Projeto Acadêmico P1</p>
+    </footer>
+
+</body>
+</html>
