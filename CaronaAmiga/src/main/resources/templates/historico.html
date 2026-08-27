@@ -41,6 +41,7 @@
                         <th>Data & Horário</th>
                         <th>Aluno Participante</th>
                         <th>Trajeto da Carona</th>
+                        <th>Rateio</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -53,9 +54,12 @@
                             <span th:if="${h.carona != null}">
                                 <strong th:text="${h.carona.origem}">Centro</strong> ➔ 
                                 <strong th:text="${h.carona.destino}">IFF Guarus</strong>
-                                (Rateio: R$ <span th:text="${#numbers.formatDecimal(h.carona.valorRateio, 1, 2)}">5.00</span>)
                             </span>
                         </td>
+                        <td>
+                            <span th:if="${h.carona != null}">
+                                <strong>R$</strong><strong th:text="${#numbers.formatDecimal(h.carona.valorRateio, 1, 2)}">5.00</strong>
+                            </span>
                         <td>
                             <form th:action="@{/historico/{id}/excluir(id=${h.id})}" method="POST" style="display:inline;" onsubmit="return confirm('Remover registro do histórico?');">
                                 <button type="submit" class="btn-link danger" style="font-size: 0.85rem;"><i class="fa-solid fa-trash-can"></i> Excluir</button>
