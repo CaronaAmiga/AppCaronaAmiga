@@ -31,8 +31,8 @@ public class SolicitacaoCaronaService {
     }
 
     public SolicitacaoCarona solicitarVaga(SolicitacaoCaronaDTO dto) {
-        Usuario passageiro = this.usuarioRepositorio.buscarPorId(dto.getPassageiroId());
-        Carona carona = this.caronaRepositorio.buscarPorId(dto.getCaronaId());
+        Usuario passageiro = this.usuarioRepositorio.findById(dto.getPassageiroId()).orElse(null);
+        Carona carona = this.caronaRepositorio.findById(dto.getCaronaId()).orElse(null);
         if (passageiro != null && carona != null && carona.getVagasDisponiveis() > 0) {
             SolicitacaoCarona solicitacao = new SolicitacaoCarona(
                 0L,
@@ -41,52 +41,52 @@ public class SolicitacaoCaronaService {
                 passageiro,
                 carona
             );
-            this.solicitacaoRepositorio.salvar(solicitacao);
+            this.solicitacaoRepositorio.save(solicitacao);
             return solicitacao;
         }
         return null;
     }
 
     public void aprovar(Long solicitacaoId) {
-        SolicitacaoCarona solicitacao = this.solicitacaoRepositorio.buscarPorId(solicitacaoId);
+        SolicitacaoCarona solicitacao = this.solicitacaoRepositorio.findById(solicitacaoId).orElse(null);
         if (solicitacao != null && solicitacao.getCarona() != null) {
             solicitacao.aprovar();
-            this.caronaRepositorio.atualizar(solicitacao.getCarona());
-            this.solicitacaoRepositorio.atualizar(solicitacao);
+            this.caronaRepositorio.save(solicitacao.getCarona());
+            this.solicitacaoRepositorio.save(solicitacao);
             HistoricoViagem histPassageiro = new HistoricoViagem(0L, LocalDateTime.now(), solicitacao.getPassageiro(), solicitacao.getCarona());
-            this.historicoViagemRepositorio.salvar(histPassageiro);
+            this.historicoViagemRepositorio.save(histPassageiro);
         }
     }
 
     public void recusar(Long solicitacaoId) {
-        SolicitacaoCarona solicitacao = this.solicitacaoRepositorio.buscarPorId(solicitacaoId);
+        SolicitacaoCarona solicitacao = this.solicitacaoRepositorio.findById(solicitacaoId).orElse(null);
         if (solicitacao != null) {
             solicitacao.recusar();
-            this.solicitacaoRepositorio.atualizar(solicitacao);
+            this.solicitacaoRepositorio.save(solicitacao);
         }
     }
 
     public void cancelar(Long solicitacaoId) {
-        SolicitacaoCarona solicitacao = this.solicitacaoRepositorio.buscarPorId(solicitacaoId);
+        SolicitacaoCarona solicitacao = this.solicitacaoRepositorio.findById(solicitacaoId).orElse(null);
         if (solicitacao != null) {
             solicitacao.cancelar();
-            this.solicitacaoRepositorio.atualizar(solicitacao);
+            this.solicitacaoRepositorio.save(solicitacao);
         }
     }
 
     public List<SolicitacaoCarona> listarTodas() {
-        return this.solicitacaoRepositorio.listar();
+        return this.solicitacaoRepositorio.findAll();
     }
 
     public List<SolicitacaoCarona> listarPorCarona(Long caronaId) {
-        return this.solicitacaoRepositorio.listarPorCaronaId(caronaId);
+        return this.solicitacaoRepositorio.findByCaronaId(caronaId);
     }
 
     public List<SolicitacaoCarona> listarPorPassageiro(Long passageiroId) {
-        return this.solicitacaoRepositorio.listarPorPassageiroId(passageiroId);
+        return this.solicitacaoRepositorio.findByPassageiroId(passageiroId);
     }
 
     public void deletar(Long id) {
-        this.solicitacaoRepositorio.deletar(id);
+        this.solicitacaoRepositorio.deleteById(id);
     }
 }

@@ -2,16 +2,38 @@ package br.edu.iff.ccc.caronaamiga.entities;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tb_avaliacao")
 public class Avaliacao {
-    private long id;
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private int nota;
     private String comentario;
     private LocalDateTime data;
+
+    @ManyToOne
+    @JoinColumn(name = "avaliador_id")
     private Usuario avaliador;
+
+    @ManyToOne
+    @JoinColumn(name = "avaliado_id")
     private Usuario avaliado;
+
+    @ManyToOne
+    @JoinColumn(name = "carona_id")
     private Carona carona;
 
-    public Avaliacao(long id, int nota, String comentario, LocalDateTime data, Usuario avaliador, Usuario avaliado, Carona carona){
+    public Avaliacao(Long id, int nota, String comentario, LocalDateTime data, Usuario avaliador, Usuario avaliado, Carona carona){
         this.id = id;
         this.nota = nota;
         this.comentario = comentario;
@@ -25,11 +47,11 @@ public class Avaliacao {
 
     }
 
-    public long getId(){
+    public Long getId(){
         return id;
     }
 
-    public void setId(long id){
+    public void setId(Long id){
         this.id = id;
     }
 

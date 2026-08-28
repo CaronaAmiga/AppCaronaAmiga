@@ -1,13 +1,37 @@
 package br.edu.iff.ccc.caronaamiga.entities;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tb_usuario")
 public class Usuario {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false, unique = true)
     private String emailInstitucional;
+
+    @Column(nullable = false)
     private String senhaHash;
+
+    @Column(nullable = false, unique = true)
     private String matricula;
     private String telefone;
     private double reputacao;
+
+    @Enumerated(EnumType.STRING)
     private TipoPerfil perfilAtivo;
 
     public Usuario(Long id, String nome, String emailInstitucional, String senhaHash, String matricula, String telefone, double reputacao, TipoPerfil perfilAtivo){

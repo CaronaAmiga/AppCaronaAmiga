@@ -9,7 +9,6 @@ import br.edu.iff.ccc.caronaamiga.repositories.HistoricoViagemRepositorio;
 
 @Service
 public class HistoricoViagemService {
-
     private final HistoricoViagemRepositorio historicoRepositorio;
 
     public HistoricoViagemService(HistoricoViagemRepositorio historicoRepositorio) {
@@ -17,14 +16,14 @@ public class HistoricoViagemService {
     }
 
     public List<HistoricoViagem> listarPorUsuario(Long usuarioId) {
-        return this.historicoRepositorio.listarPorUsuarioId(usuarioId);
+        return this.historicoRepositorio.findByUsuarioId(usuarioId);
     }
 
     public List<HistoricoViagem> listarTodos() {
-        return this.historicoRepositorio.listar();
+        return this.historicoRepositorio.findAll();
     }
 
     public void deletar(Long id) {
-        this.historicoRepositorio.deletar(id);
+        this.historicoRepositorio.deleteById(id);
     }
 }

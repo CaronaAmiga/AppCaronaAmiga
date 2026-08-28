@@ -2,13 +2,32 @@ package br.edu.iff.ccc.caronaamiga.entities;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tb_historico_viagem")
 public class HistoricoViagem {
-    private long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private LocalDateTime dataParticipacao;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
+
+    @ManyToOne
+    @JoinColumn(name = "carona_id")
     private Carona carona;
 
-    public HistoricoViagem(long id, LocalDateTime dataParticipacao, Usuario usuario, Carona carona){
+    public HistoricoViagem(Long id, LocalDateTime dataParticipacao, Usuario usuario, Carona carona){
         this.id = id;
         this.dataParticipacao = dataParticipacao;
         this.usuario = usuario;
@@ -19,11 +38,11 @@ public class HistoricoViagem {
 
     }
 
-    public long getId(){
+    public Long getId(){
         return id;
     }
 
-    public void setId(long id){
+    public void setId(Long id){
         this.id = id;
     }
 

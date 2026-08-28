@@ -3,9 +3,22 @@ package br.edu.iff.ccc.caronaamiga.entities;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import org.springframework.asm.Label;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "tb_carona")
 public class Carona {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String origem;
     private String destino;
@@ -14,8 +27,16 @@ public class Carona {
     private double valorRateio;
     private int vagasDisponiveis;
     private double quilometragem;
+
+    @Enumerated(EnumType.STRING)
     private StatusCarona status;
+
+    @ManyToOne
+    @JoinColumn(name = "motorista_id")
     private Usuario motorista;
+
+    @ManyToOne
+    @JoinColumn(name = "veiculo_id")
     private Veiculo veiculo;
 
     public Carona(Long id, String origem, String destino, LocalDate data, LocalTime horarioPartida, double valorRateio, int vagasDisponiveis, double quilometragem, StatusCarona status, Usuario motorista, Veiculo veiculo){

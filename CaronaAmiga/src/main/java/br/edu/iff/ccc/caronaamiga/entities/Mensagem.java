@@ -2,14 +2,33 @@ package br.edu.iff.ccc.caronaamiga.entities;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tb_mensagem")
 public class Mensagem {
-    private long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String conteudo;
     private LocalDateTime dataHora;
+
+    @ManyToOne
+    @JoinColumn(name = "remetente_id")
     private Usuario remetente;
+
+    @ManyToOne
+    @JoinColumn(name = "destinatario_id")
     private Usuario destinatario;
 
-    public Mensagem(long id, String conteudo, LocalDateTime dataHora, Usuario remetente, Usuario destinatario){
+    public Mensagem(Long id, String conteudo, LocalDateTime dataHora, Usuario remetente, Usuario destinatario){
         this.id = id;
         this.conteudo = conteudo;
         this.dataHora = dataHora;
@@ -21,11 +40,11 @@ public class Mensagem {
 
     }
 
-    public long getId(){
+    public Long getId(){
         return id;
     }
 
-    public void setId(long id){
+    public void setId(Long id){
         this.id = id;
     }
 
