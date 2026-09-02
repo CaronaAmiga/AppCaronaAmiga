@@ -24,7 +24,7 @@ public class VeiculoService {
     public void criarVeiculo(VeiculoDTO dto) {
         Usuario motorista = null;
         if(dto.getMotoristaId() != null){
-            motorista = this.usuarioRepositorio.buscarPorId(dto.getMotoristaId());
+            motorista = this.usuarioRepositorio.findById(dto.getMotoristaId()).orElse(null);
         }
 
         Veiculo novoVeiculo = new Veiculo(
@@ -36,34 +36,34 @@ public class VeiculoService {
             motorista
         );
 
-        this.veiculoRepositorio.salvar(novoVeiculo);
+        this.veiculoRepositorio.save(novoVeiculo);
     } 
 
     public List<Veiculo> listarVeiculo() {
-        return this.veiculoRepositorio.listar();
+        return this.veiculoRepositorio.findAll();
     }
 
     public Veiculo buscarPorId(Long id) {
-        return this.veiculoRepositorio.buscarPorId(id);
+        return this.veiculoRepositorio.findById(id).orElse(null);
     }
 
     public List<Veiculo> listarPorMotoristaId(Long motoristaId){
-        return this.veiculoRepositorio.listarPorMotoristaId(motoristaId);
+        return this.veiculoRepositorio.findByMotoristaId(motoristaId);
     }
 
     public void atualizarVeiculo(Long id, VeiculoDTO dto) {
-        Veiculo veiculo = this.veiculoRepositorio.buscarPorId(id);
+        Veiculo veiculo = buscarPorId(id);
         if (veiculo != null) {
             veiculo.atualizarDados(dto.getModelo(), dto.getCor(), dto.getPlaca(), dto.getQuantidadeVagas());
             if (dto.getMotoristaId() != null) {
-                Usuario motorista = this.usuarioRepositorio.buscarPorId(dto.getMotoristaId());
+                Usuario motorista = this.usuarioRepositorio.findById(dto.getMotoristaId()).orElse(null);
                 veiculo.setMotorista(motorista);
             }
-            this.veiculoRepositorio.atualizar(veiculo);
+            this.veiculoRepositorio.save(veiculo);
         }
     }
 
     public void deletarVeiculo(Long id) {
-        this.veiculoRepositorio.deletar(id);
+        this.veiculoRepositorio.deleteById(id);
     }
 }

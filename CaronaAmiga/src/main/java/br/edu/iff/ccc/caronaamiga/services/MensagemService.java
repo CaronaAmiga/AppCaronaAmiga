@@ -23,8 +23,8 @@ public class MensagemService {
     }
 
     public Mensagem enviarMensagem(MensagemDTO dto) {
-        Usuario remetente = this.usuarioRepositorio.buscarPorId(dto.getRemetenteId());
-        Usuario destinatario = this.usuarioRepositorio.buscarPorId(dto.getDestinatarioId());
+        Usuario remetente = this.usuarioRepositorio.findById(dto.getRemetenteId()).orElse(null);
+        Usuario destinatario = this.usuarioRepositorio.findById(dto.getDestinatarioId()).orElse(null);
 
         if (remetente != null && destinatario != null) {
             Mensagem mensagem = new Mensagem(
@@ -34,21 +34,21 @@ public class MensagemService {
                 remetente,
                 destinatario
             );
-            this.mensagemRepositorio.salvar(mensagem);
+            this.mensagemRepositorio.save(mensagem);
             return mensagem;
         }
         return null;
     }
 
     public List<Mensagem> obterConversa(Long idUsuario1, Long idUsuario2) {
-        return this.mensagemRepositorio.listarConversa(idUsuario1, idUsuario2);
+        return this.mensagemRepositorio.findConversa(idUsuario1, idUsuario2);
     }
 
     public List<Mensagem> listarTodas() {
-        return this.mensagemRepositorio.listar();
+        return this.mensagemRepositorio.findAll();
     }
 
     public void deletar(Long id) {
-        this.mensagemRepositorio.deletar(id);
+        this.mensagemRepositorio.deleteById(id);
     }
 }

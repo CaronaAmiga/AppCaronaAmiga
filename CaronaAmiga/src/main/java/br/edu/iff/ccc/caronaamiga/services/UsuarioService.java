@@ -33,30 +33,30 @@ public class UsuarioService {
             novoUsuario.setPerfilAtivo(TipoPerfil.PASSAGEIRO);
         }
 
-        this.usuarioRepositorio.salvar(novoUsuario);
+        this.usuarioRepositorio.save(novoUsuario);
         return novoUsuario;
     }
 
     public List<Usuario> listar(){
-        return this.usuarioRepositorio.listar();
+        return this.usuarioRepositorio.findAll();
     }
 
     public List<Usuario> listarMotoristas() {
-        return this.usuarioRepositorio.listar().stream()
+        return this.usuarioRepositorio.findAll().stream()
             .filter(u -> u.getPerfilAtivo() == TipoPerfil.MOTORISTA)
             .toList();
     }
 
     public Usuario buscarPorId(Long id){
-        return this.usuarioRepositorio.buscarPorId(id);
+        return this.usuarioRepositorio.findById(id).orElse(null);
     }
 
     public Usuario buscarPorEmail(String email){
-        return this.usuarioRepositorio.buscarPorEmail(email);
+        return this.usuarioRepositorio.findByEmailInstitucional(email).orElse(null);
     }
 
     public void atualizar(Long id, UsuarioDTO dto){
-        Usuario usuarioExistente = this.usuarioRepositorio.buscarPorId(id);
+        Usuario usuarioExistente = this.usuarioRepositorio.findById(id).orElse(null);
         if (usuarioExistente != null) {
             usuarioExistente.setNome(dto.getNome());
             usuarioExistente.setEmailInstitucional(dto.getEmailInstitucional());
@@ -70,24 +70,24 @@ public class UsuarioService {
                 usuarioExistente.setPerfilAtivo(dto.getPerfilAtivo());
             }
 
-            this.usuarioRepositorio.atualizar(usuarioExistente);
+            this.usuarioRepositorio.save(usuarioExistente);
         }
     }
 
     public void deletar(Long id){
-        this.usuarioRepositorio.deletar(id);
+        this.usuarioRepositorio.deleteById(id);
     }
 
     public void alternarPerfil(Long id){
-        Usuario usuario = this.usuarioRepositorio.buscarPorId(id);
+        Usuario usuario = this.usuarioRepositorio.findById(id).orElse(null);
         if(usuario != null){
             usuario.alternarPerfil();
-            this.usuarioRepositorio.atualizar(usuario);
+            this.usuarioRepositorio.save(usuario);
         }
     }
 
     public Usuario autenticar(String email, String senha) {
-        Usuario usuario = this.usuarioRepositorio.buscarPorEmail(email);
+        Usuario usuario = buscarPorEmail(email);
         if (usuario != null && usuario.getSenhaHash() != null && usuario.getSenhaHash().equals(senha)) {
             return usuario;
         }

@@ -26,9 +26,9 @@ public class AvaliacaoService{
     }
 
     public Avaliacao avaliar(AvaliacaoDTO dto) {
-        Usuario avaliador = this.usuarioRepositorio.buscarPorId(dto.getAvaliadorId());
-        Usuario avaliado = this.usuarioRepositorio.buscarPorId(dto.getAvaliadoId());
-        Carona carona = this.caronaRepositorio.buscarPorId(dto.getCaronaId());
+        Usuario avaliador = this.usuarioRepositorio.findById(dto.getAvaliadorId()).orElse(null);
+        Usuario avaliado = this.usuarioRepositorio.findById(dto.getAvaliadoId()).orElse(null);
+        Carona carona = this.caronaRepositorio.findById(dto.getCaronaId()).orElse(null);
         if (avaliador != null && avaliado != null) {
             Avaliacao avaliacao = new Avaliacao(
                 0L,
@@ -39,8 +39,7 @@ public class AvaliacaoService{
                 avaliado,
                 carona
             );
-            this.avaliacaoRepositorio.salvar(avaliacao);
-            // Recalcula média de reputação do usuário avaliado
+            this.avaliacaoRepositorio.save(avaliacao);
             recalcularReputacao(avaliado.getId());
             return avaliacao;
         }
@@ -48,7 +47,7 @@ public class AvaliacaoService{
     }
 
     private void recalcularReputacao(Long usuarioId) {
-        List<Avaliacao> avaliacoes = this.avaliacaoRepositorio.listarPorAvaliadoId(usuarioId);
+        List<Avaliacao> avaliacoes = this.avaliacaoRepositorio.findByAvaliadoId(usuarioId);
         if (!avaliacoes.isEmpty()) {
             double soma = 0.0;
             for (Avaliacao a : avaliacoes) {
@@ -56,23 +55,23 @@ public class AvaliacaoService{
             }
             
             double media = soma / avaliacoes.size();
-            Usuario usuario = this.usuarioRepositorio.buscarPorId(usuarioId);
+            Usuario usuario = this.usuarioRepositorio.findById(usuarioId).orElse(null);
             if (usuario != null) {
                 usuario.setReputacao(Math.round(media * 10.0) / 10.0);
-                this.usuarioRepositorio.atualizar(usuario);
+                this.usuarioRepositorio.save(usuario);
             }
         }
     }
 
     public List<Avaliacao> listarPorAvaliado(Long usuarioId) {
-        return this.avaliacaoRepositorio.listarPorAvaliadoId(usuarioId);
+        return this.avaliacaoRepositorio.findByAvaliadoId(usuarioId);
     }
 
     public List<Avaliacao> listarTodas() {
-        return this.avaliacaoRepositorio.listar();
+        return this.avaliacaoRepositorio.findAll();
     }
 
     public void deletar(Long id) {
-        this.avaliacaoRepositorio.deletar(id);
+        this.avaliacaoRepositorio.deleteById(id);
     }
 }

@@ -2,14 +2,38 @@ package br.edu.iff.ccc.caronaamiga.entities;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+
+@Entity
+@Table(name = "tb_solicitacao_carona")
 public class SolicitacaoCarona {
-    private long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private LocalDateTime dataSolicitacao;
+
+    @Enumerated(EnumType.STRING)
     private StatusSolicitacao status;
+
+    @ManyToOne
+    @JoinColumn(name = "passageiro_id")
     private Usuario passageiro;
+
+    @ManyToOne
+    @JoinColumn(name = "carona_id")
     private Carona carona;
 
-    public SolicitacaoCarona(long id, LocalDateTime dataSolicitacao, StatusSolicitacao status, Usuario passageiro, Carona carona){
+    public SolicitacaoCarona(Long id, LocalDateTime dataSolicitacao, StatusSolicitacao status, Usuario passageiro, Carona carona){
         this.id = id;
         this.dataSolicitacao = dataSolicitacao;
         this.status = status;
@@ -21,11 +45,11 @@ public class SolicitacaoCarona {
 
     }
 
-    public long getId(){
+    public Long getId(){
         return id;
     }
 
-    public void setId(long id){
+    public void setId(Long id){
         this.id = id;
     }
 

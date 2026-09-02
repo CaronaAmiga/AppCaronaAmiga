@@ -31,7 +31,7 @@ public class CaronaService{
     }
 
     public Carona criarCarona(CaronaDTO dto){
-        Usuario motorista = this.usuarioRepositorio.buscarPorId(dto.getMotoristaId());
+        Usuario motorista = this.usuarioRepositorio.findById(dto.getMotoristaId()).orElse(null);
         if (motorista == null) {
             throw new IllegalArgumentException("Motorista não encontrado.");
         }
@@ -39,7 +39,7 @@ public class CaronaService{
             throw new IllegalArgumentException("Apenas usuários com perfil ativo de Motorista podem oferecer caronas.");
         }
 
-        Veiculo veiculo = this.veiculoRepositorio.buscarPorId(dto.getVeiculoId());
+        Veiculo veiculo = this.veiculoRepositorio.findById(dto.getVeiculoId()).orElse(null);
         if (veiculo == null) {
             throw new IllegalArgumentException("Veículo não encontrado.");
         }
@@ -58,76 +58,93 @@ public class CaronaService{
         carona.setVeiculo(veiculo);
 
         int vagas;
-        if (dto.getVagasDisponiveis() > 0) {
+        if(dto.getVagasDisponiveis() > 0){
             vagas = dto.getVagasDisponiveis();
         } 
         
-        else if (veiculo != null && veiculo.getQuantidadeVagas() > 0) {
+        else if(veiculo.getQuantidadeVagas() > 0){
             vagas = veiculo.getQuantidadeVagas();
         } 
         
-        else {
+        else{
             vagas = 4; 
         }
 
         carona.setVagasDisponiveis(vagas);
         
-        if (dto.getValorRateio() > 0) {
+        if(dto.getValorRateio() > 0) {
             carona.setValorRateio(dto.getValorRateio());
         } 
         
         else {
             carona.calcularRateio();
         }
-        this.caronaRepositorio.salvar(carona);
+        this.caronaRepositorio.save(carona);
         return carona;
     }
 
-    public List<Carona> listarTodas(){
-        return this.caronaRepositorio.listar();
+    public List<Carona> buscarTodasAtivas(){
+        return this.caronaRepositorio.findAll().stream()
+            .filter(c -> c.getStatus() == StatusCarona.AGENDADA || c.getStatus() == StatusCarona.EM_ANDAMENTO)
+            .toList();
     }
 
-    public Carona buscarPorId(Long id){
-        return this.caronaRepositorio.buscarPorId(id);
+    public List<Carona> buscarCaronas(String periodo, String destinoCampus, Double maxPreco){
+        return this.caronaRepositorio.findAll().stream()
+            .filter(c -> c.getStatus() == StatusCarona.AGENDADA)
+            .filter(c -> (destinoCampus == null || destinoCampus.isBlank() || (c.getDestino() != null && c.getDestino().toLowerCase().contains(destinoCampus.toLowerCase()))))
+            .filter(c -> (maxPreco == null || c.getValorRateio() <= maxPreco))
+            .toList();
+    }
+
+    public List<Carona> listarTodas() {
+        return this.caronaRepositorio.findAll();
     }
 
     public List<Carona> buscarPorDestino(String destino) {
-        return this.caronaRepositorio.buscarPorDestino(destino);
+        if (destino == null || destino.isBlank()) {
+            return listarTodas();
+        }
+        return this.caronaRepositorio.findByDestinoContainingIgnoreCase(destino);
     }
 
-    public List<Carona> listarPorMotorista(Long motoristaId) {
-        return this.caronaRepositorio.listarPorMotoristaId(motoristaId);
+    public Carona buscarPorId(Long id) {
+        return this.caronaRepositorio.findById(id).orElse(null);
     }
 
-    public void iniciarCarona(Long id) {
-        Carona carona = this.caronaRepositorio.buscarPorId(id);
-        if (carona != null) {
+    public List<Carona> listarPorMotorista(Long motoristaId){
+        return this.caronaRepositorio.findByMotoristaId(motoristaId);
+    }
+
+    public void iniciarCarona(Long id){
+        Carona carona = buscarPorId(id);
+        if(carona != null){
             carona.iniciarCarona();
-            this.caronaRepositorio.atualizar(carona);
+            this.caronaRepositorio.save(carona);
         }
     }
 
-    public void concluirCarona(Long id) {
-        Carona carona = this.caronaRepositorio.buscarPorId(id);
-        if (carona != null) {
+    public void concluirCarona(Long id){
+        Carona carona = this.caronaRepositorio.findById(id).orElse(null);
+        if(carona != null){
             carona.concluirCarona();
-            this.caronaRepositorio.atualizar(carona);
-            if (carona.getMotorista() != null) {
-                HistoricoViagem historico = new HistoricoViagem(0L, LocalDateTime.now(), carona.getMotorista(), carona);
-                this.historicoViagemRepositorio.salvar(historico);
+            this.caronaRepositorio.save(carona);
+            if(carona.getMotorista() != null){
+                HistoricoViagem historico = new HistoricoViagem(null, LocalDateTime.now(), carona.getMotorista(), carona);
+                this.historicoViagemRepositorio.save(historico);
             }
         }
     }
 
-    public void cancelarCarona(Long id) {
-        Carona carona = this.caronaRepositorio.buscarPorId(id);
-        if (carona != null) {
+    public void cancelarCarona(Long id){
+        Carona carona = this.caronaRepositorio.findById(id).orElse(null);
+        if(carona != null){
             carona.cancelarCarona();
-            this.caronaRepositorio.atualizar(carona);
+            this.caronaRepositorio.save(carona);
         }
     }
 
-    public void deletarCarona(Long id) {
-        this.caronaRepositorio.deletar(id);
+    public void deletarCarona(Long id){
+        this.caronaRepositorio.deleteById(id);
     }
 }
