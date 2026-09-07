@@ -9,8 +9,11 @@ import br.edu.iff.ccc.caronaamiga.dto.CaronaDTO;
 import br.edu.iff.ccc.caronaamiga.entities.Carona;
 import br.edu.iff.ccc.caronaamiga.entities.HistoricoViagem;
 import br.edu.iff.ccc.caronaamiga.entities.StatusCarona;
+import br.edu.iff.ccc.caronaamiga.entities.TipoPerfil;
 import br.edu.iff.ccc.caronaamiga.entities.Usuario;
 import br.edu.iff.ccc.caronaamiga.entities.Veiculo;
+import br.edu.iff.ccc.caronaamiga.exception.RecursoNaoEncontradoException;
+import br.edu.iff.ccc.caronaamiga.exception.RegraDeNegocioException;
 import br.edu.iff.ccc.caronaamiga.repositories.CaronaRepositorio;
 import br.edu.iff.ccc.caronaamiga.repositories.HistoricoViagemRepositorio;
 import br.edu.iff.ccc.caronaamiga.repositories.UsuarioRepositorio;
@@ -31,23 +34,20 @@ public class CaronaService{
     }
 
     public Carona criarCarona(CaronaDTO dto){
-        Usuario motorista = this.usuarioRepositorio.findById(dto.getMotoristaId()).orElse(null);
-        if (motorista == null) {
-            throw new IllegalArgumentException("Motorista não encontrado.");
-        }
-        if (motorista.getPerfilAtivo() != br.edu.iff.ccc.caronaamiga.entities.TipoPerfil.MOTORISTA) {
-            throw new IllegalArgumentException("Apenas usuários com perfil ativo de Motorista podem oferecer caronas.");
+        Usuario motorista = this.usuarioRepositorio.findById(dto.getMotoristaId()).orElseThrow(() -> new RecursoNaoEncontradoException("Motorista não encontrado com o id: " + dto.getMotoristaId()));
+
+        if (motorista.getPerfilAtivo() != TipoPerfil.MOTORISTA) {
+            throw new RegraDeNegocioException("Apenas usuários com perfil ativo de Motorista podem oferecer caronas.");
         }
 
-        Veiculo veiculo = this.veiculoRepositorio.findById(dto.getVeiculoId()).orElse(null);
-        if (veiculo == null) {
-            throw new IllegalArgumentException("Veículo não encontrado.");
-        }
+        Veiculo veiculo = this.veiculoRepositorio.findById(dto.getVeiculoId()).orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado com o id: " + dto.getVeiculoId()));
+
         if (veiculo.getMotorista() == null || !veiculo.getMotorista().getId().equals(motorista.getId())) {
-            throw new IllegalArgumentException("O veículo selecionado não pertence ao motorista condutor.");
+            throw new RegraDeNegocioException("O veículo selecionado não pertence ao motorista condutor.");
         }
 
         Carona carona = new Carona();
+
         carona.setOrigem(dto.getOrigem());
         carona.setDestino(dto.getDestino());
         carona.setData(dto.getData());
@@ -109,8 +109,8 @@ public class CaronaService{
     }
 
     public Carona buscarPorId(Long id) {
-        return this.caronaRepositorio.findById(id).orElse(null);
-    }
+        return this.caronaRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Carona não encontrada com o id: " + id));
+    }  
 
     public List<Carona> listarPorMotorista(Long motoristaId){
         return this.caronaRepositorio.findByMotoristaId(motoristaId);
@@ -118,33 +118,40 @@ public class CaronaService{
 
     public void iniciarCarona(Long id){
         Carona carona = buscarPorId(id);
-        if(carona != null){
-            carona.iniciarCarona();
-            this.caronaRepositorio.save(carona);
+        if(carona.getStatus() != StatusCarona.AGENDADA){
+            throw new RegraDeNegocioException("Apenas caronas com status AGENDADA podem ser iniciadas.");
         }
+        carona.iniciarCarona();
+        this.caronaRepositorio.save(carona);
     }
 
     public void concluirCarona(Long id){
-        Carona carona = this.caronaRepositorio.findById(id).orElse(null);
-        if(carona != null){
-            carona.concluirCarona();
-            this.caronaRepositorio.save(carona);
-            if(carona.getMotorista() != null){
-                HistoricoViagem historico = new HistoricoViagem(null, LocalDateTime.now(), carona.getMotorista(), carona);
-                this.historicoViagemRepositorio.save(historico);
-            }
+        Carona carona = buscarPorId(id);
+        if(carona.getStatus() != StatusCarona.EM_ANDAMENTO){
+            throw new RegraDeNegocioException("Apenas caronas com status EM_ANDAMENTO podem ser concluídas.");
+        }
+        carona.concluirCarona();
+        this.caronaRepositorio.save(carona);
+        if(carona.getMotorista() != null){
+            HistoricoViagem historico = new HistoricoViagem(null, LocalDateTime.now(), carona.getMotorista(), carona);
+            this.historicoViagemRepositorio.save(historico);
         }
     }
 
     public void cancelarCarona(Long id){
-        Carona carona = this.caronaRepositorio.findById(id).orElse(null);
-        if(carona != null){
-            carona.cancelarCarona();
-            this.caronaRepositorio.save(carona);
+        Carona carona = buscarPorId(id);
+        if(carona.getStatus() == StatusCarona.CONCLUIDA){
+            throw new RegraDeNegocioException("Não é possível cancelar uma carona que já foi concluída.");
         }
+        if(carona.getStatus() == StatusCarona.CANCELADA){
+            throw new RegraDeNegocioException("A carona já se encontra cancelada.");
+        }
+        carona.cancelarCarona();
+        this.caronaRepositorio.save(carona);
     }
 
     public void deletarCarona(Long id){
-        this.caronaRepositorio.deleteById(id);
+        Carona carona = buscarPorId(id);
+        this.caronaRepositorio.delete(carona);
     }
 }

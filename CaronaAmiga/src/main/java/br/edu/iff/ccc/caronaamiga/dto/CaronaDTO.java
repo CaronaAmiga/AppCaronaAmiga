@@ -3,17 +3,47 @@ package br.edu.iff.ccc.caronaamiga.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class CaronaDTO {
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
+public class CaronaDTO {
     private Long id;
+
+    @NotBlank(message = "O local de origem é obrigatório.")
+    @Size(min = 3, max = 100, message = "A origem deve ter entre 3 e 100 caracteres.")
     private String origem;
+
+    @NotBlank(message = "O destino é obrigatório.")
+    @Size(min = 3, max = 100, message = "O destino deve ter entre 3 e 100 caracteres.")
     private String destino;
+
+    @NotNull(message = "A data da viagem é obrigatória.")
+    @FutureOrPresent(message = "A data da carona deve ser hoje ou uma data futura.")
     private LocalDate data;
+
+    @NotNull(message = "O horário de partida é obrigatório.")
     private LocalTime horarioPartida;
+
+    @Positive(message = "A distância estimada deve ser maior que zero.")
     private double quilometragem;
+
+    @PositiveOrZero(message = "O valor de rateio não pode ser negativo.")
     private double valorRateio;
+
+    @Min(value = 1, message = "A carona deve oferecer pelo menos 1 vaga.")
+    @Max(value = 8, message = "A carona pode oferecer no máximo 8 vagas.")
     private int vagasDisponiveis;
+
+    @NotNull(message = "Selecione o motorista condutor.")
     private Long motoristaId;
+
+    @NotNull(message = "Selecione o veículo da carona.")
     private Long veiculoId;
 
     public CaronaDTO() {

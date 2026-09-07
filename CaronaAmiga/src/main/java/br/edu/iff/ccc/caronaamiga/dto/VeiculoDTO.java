@@ -1,13 +1,33 @@
 package br.edu.iff.ccc.caronaamiga.dto;
 
-public class VeiculoDTO {
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
+public class VeiculoDTO {
     private Long id;
+
+    @NotBlank(message = "O modelo do veículo é obrigatório.")
+    @Size(min = 2, max = 50, message = "O modelo deve ter entre 2 e 50 caracteres.")
     private String modelo;
+
+    @NotBlank(message = "A cor do veículo é obrigatória.")
+    @Size(min = 3, max = 30, message = "A cor deve ter entre 3 e 30 caracteres.")
     private String cor;
+
+    @NotBlank(message = "A placa do veículo é obrigatória.")
+    @Pattern(regexp = "^[A-Za-z]{3}-?[0-9][A-Za-z0-9][0-9]{2}$", message = "Placa inválida. Utilize o formato tradicional (ABC-1234) ou Mercosul (ABC1D23).")
     private String placa;
+
+    @Min(value = 1, message = "O veículo deve ter pelo menos 1 vaga.")
+    @Max(value = 8, message = "O veículo pode ter no máximo 8 vagas.")
     private int quantidadeVagas;
-    private Long motoristaId; 
+
+    @NotNull(message = "Selecione o motorista proprietário do veículo.")
+    private Long motoristaId;
 
     public VeiculoDTO() {
     }
