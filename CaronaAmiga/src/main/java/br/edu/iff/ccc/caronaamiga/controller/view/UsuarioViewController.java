@@ -2,7 +2,9 @@ package br.edu.iff.ccc.caronaamiga.controller.view;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import br.edu.iff.ccc.caronaamiga.dto.UsuarioDTO;
 import br.edu.iff.ccc.caronaamiga.entities.Usuario;
 import br.edu.iff.ccc.caronaamiga.services.UsuarioService;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/usuarios")
@@ -35,7 +38,11 @@ public class UsuarioViewController {
     }
 
     @PostMapping
-    public String salvarUsuario(UsuarioDTO usuarioDTO) {
+    public String salvarUsuario(@Valid @ModelAttribute("usuario") UsuarioDTO usuarioDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("isEdicao", false);
+            return "usuarioForm";
+        }
         this.usuarioService.cadastrar(usuarioDTO);
         return "redirect:/usuarios";
     }
@@ -74,7 +81,12 @@ public class UsuarioViewController {
     }
 
     @PostMapping("/{id}/editar")
-    public String atualizarUsuario(@PathVariable Long id, UsuarioDTO usuarioDTO) {
+    public String atualizarUsuario(@PathVariable Long id, @Valid @ModelAttribute("usuario") UsuarioDTO usuarioDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("usuarioId", id);
+            model.addAttribute("isEdicao", true);
+            return "usuarioForm";
+        }
         this.usuarioService.atualizar(id, usuarioDTO);
         return "redirect:/usuarios";
     }

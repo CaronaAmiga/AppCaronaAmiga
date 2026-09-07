@@ -1,15 +1,34 @@
 package br.edu.iff.ccc.caronaamiga.dto;
 
 import br.edu.iff.ccc.caronaamiga.entities.TipoPerfil;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class UsuarioDTO {
 
     private Long id;
+
+    @NotBlank(message = "O nome completo é obrigatório.")
+    @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres.")
     private String nome;
+
+    @NotBlank(message = "O e-mail institucional é obrigatório.")
+    @Email(message = "Informe um e-mail válido.")
     private String emailInstitucional;
+
+    @Size(max = 50, message = "A senha deve ter no máximo 50 caracteres.")
     private String senha;
+
+    @NotBlank(message = "A matrícula acadêmica é obrigatória.")
+    @Size(min = 6, max = 20, message = "A matrícula deve ter entre 6 e 20 caracteres.")
     private String matricula;
+
+    @NotBlank(message = "O telefone de contato é obrigatório.")
     private String telefone;
+
+    @NotNull(message = "Selecione o perfil do usuário.")
     private TipoPerfil perfilAtivo;
 
     

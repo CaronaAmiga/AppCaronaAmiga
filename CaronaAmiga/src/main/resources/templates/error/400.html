@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ação Não Permitida | Carona Amiga</title>
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- Navbar Padrão -->
+    <header th:replace="~{baseLayout :: navbar('')}">
+        <div class="navbar-inner">
+            <a href="/" class="brand-logo"><i class="fa-solid fa-car-side"></i> Carona Amiga</a>
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 600px; text-align: center; padding-top: 60px;">
+        <div class="card" style="padding: 40px; box-shadow: var(--shadow-lg);">
+            <div style="margin-bottom: 20px;">
+                <i class="fa-solid fa-hand" style="font-size: 4rem; color: var(--warning);"></i>
+            </div>
+
+            <span class="badge badge-warning" style="font-size: 0.9rem; padding: 4px 14px; margin-bottom: 12px; display: inline-block;">
+                Aviso de Regra de Negócio
+            </span>
+
+            <h2 style="margin-bottom: 12px; color: var(--neutral-dark);" th:text="${titulo} ?: 'Ação Não Permitida'">Ação Não Permitida</h2>
+            
+            <p style="color: var(--neutral-dark); font-size: 1.05rem; margin-bottom: 24px; line-height: 1.5;" th:text="${mensagem} ?: 'A operação solicitada não pôde ser concluída porque viola regras do sistema.'">
+                A operação solicitada não pôde ser concluída.
+            </p>
+
+            <div style="background-color: var(--bg-page); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 25px; font-size: 0.85rem; color: var(--neutral);">
+                <i class="fa-regular fa-clock"></i> Registrado em: <span th:text="${#temporals.format(dataHora, 'dd/MM/yyyy HH:mm:ss')} ?: 'Agora'">--</span>
+            </div>
+
+            <div class="btn-group-center" style="gap: 12px;">
+                <a href="/" class="btn btn-primary"><i class="fa-solid fa-house"></i> Voltar ao Início</a>
+                <a href="javascript:history.back()" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Voltar e Corrigir</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer th:replace="~{baseLayout :: footer}">
+        <p>&copy; 2026 Carona Amiga Universitária - Projeto Acadêmico P1</p>
+    </footer>
+
+</body>
+</html>
