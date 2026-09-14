@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ControllerAdvice
+@ControllerAdvice(basePackages = "br.edu.iff.ccc.caronaamiga.controller.view")
 public class GlobalExceptionHandler {
 
     // 1. Captura quando um ID ou registro não é encontrado no banco (Status 404)

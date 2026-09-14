@@ -25,7 +25,7 @@ public class VeiculoService {
         this.usuarioRepositorio = usuarioRepositorio;
     }
 
-    public void criarVeiculo(VeiculoDTO dto) {
+    public Veiculo criarVeiculo(VeiculoDTO dto) {
         if (this.veiculoRepositorio.findByPlaca(dto.getPlaca()).isPresent()) {
             throw new EntidadeDuplicadaException("Já existe um veículo cadastrado com a placa " + dto.getPlaca());
         }
@@ -47,8 +47,10 @@ public class VeiculoService {
             dto.getQuantidadeVagas(),
             motorista
         );
-
+        
         this.veiculoRepositorio.save(novoVeiculo);
+
+        return this.veiculoRepositorio.save(novoVeiculo);
     } 
 
     public List<Veiculo> listarVeiculo() {

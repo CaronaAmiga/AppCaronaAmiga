@@ -9,6 +9,7 @@ import br.edu.iff.ccc.caronaamiga.dto.AvaliacaoDTO;
 import br.edu.iff.ccc.caronaamiga.entities.Avaliacao;
 import br.edu.iff.ccc.caronaamiga.entities.Carona;
 import br.edu.iff.ccc.caronaamiga.entities.Usuario;
+import br.edu.iff.ccc.caronaamiga.exception.RecursoNaoEncontradoException;
 import br.edu.iff.ccc.caronaamiga.repositories.AvaliacaoRepositorio;
 import br.edu.iff.ccc.caronaamiga.repositories.CaronaRepositorio;
 import br.edu.iff.ccc.caronaamiga.repositories.UsuarioRepositorio;
@@ -73,5 +74,9 @@ public class AvaliacaoService{
 
     public void deletar(Long id) {
         this.avaliacaoRepositorio.deleteById(id);
+    }
+
+    public Avaliacao buscarPorId(Long id) {
+    return this.avaliacaoRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Avaliação não encontrada com o id: " + id));
     }
 }

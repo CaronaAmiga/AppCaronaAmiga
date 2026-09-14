@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import br.edu.iff.ccc.caronaamiga.dto.MensagemDTO;
 import br.edu.iff.ccc.caronaamiga.entities.Mensagem;
 import br.edu.iff.ccc.caronaamiga.entities.Usuario;
+import br.edu.iff.ccc.caronaamiga.exception.RecursoNaoEncontradoException;
 import br.edu.iff.ccc.caronaamiga.repositories.MensagemRepositorio;
 import br.edu.iff.ccc.caronaamiga.repositories.UsuarioRepositorio;
 
@@ -50,5 +51,9 @@ public class MensagemService {
 
     public void deletar(Long id) {
         this.mensagemRepositorio.deleteById(id);
+    }
+
+    public Mensagem buscarPorId(Long id) {
+        return this.mensagemRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Mensagem não encontrada com o id: " + id));
     }
 }

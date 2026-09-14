@@ -133,4 +133,8 @@ public class SolicitacaoCaronaService {
     public List<SolicitacaoCarona> listarPorPassageiro(Long passageiroId) {
         return this.solicitacaoRepositorio.findByPassageiroId(passageiroId);
     }
+
+    public SolicitacaoCarona buscarPorId(Long id) {
+    return this.solicitacaoRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Solicitação não encontrada com o id: " + id));
+}
 }
