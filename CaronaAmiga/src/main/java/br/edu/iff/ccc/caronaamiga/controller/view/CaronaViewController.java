@@ -2,7 +2,9 @@ package br.edu.iff.ccc.caronaamiga.controller.view;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,7 @@ import br.edu.iff.ccc.caronaamiga.services.CaronaService;
 import br.edu.iff.ccc.caronaamiga.services.SolicitacaoCaronaService;
 import br.edu.iff.ccc.caronaamiga.services.UsuarioService;
 import br.edu.iff.ccc.caronaamiga.services.VeiculoService;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/caronas")
@@ -52,7 +55,12 @@ public class CaronaViewController {
     }
 
     @PostMapping
-    public String criarCarona(CaronaDTO caronaDTO) {
+    public String criarCarona(@Valid @ModelAttribute("carona") CaronaDTO caronaDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("motoristas", this.usuarioService.listarMotoristas());
+            model.addAttribute("veiculos", this.veiculoService.listarVeiculo());
+            return "caronaForm";
+        }
         this.caronaService.criarCarona(caronaDTO);
         return "redirect:/caronas";
     }

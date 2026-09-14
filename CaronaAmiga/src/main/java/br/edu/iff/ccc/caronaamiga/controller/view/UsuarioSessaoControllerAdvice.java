@@ -28,15 +28,26 @@ public class UsuarioSessaoControllerAdvice {
                 usuario = todos.get(0);
                 session.setAttribute("usuarioLogado", usuario);
             }
-        } else {
+        } 
+        
+        else {
             // Mantém os dados sincronizados em caso de troca de perfil ou edição
-            Usuario atualizado = this.usuarioService.buscarPorId(usuario.getId());
-            if (atualizado != null) {
+            try {
+                Usuario atualizado = this.usuarioService.buscarPorId(usuario.getId());
                 usuario = atualizado;
                 session.setAttribute("usuarioLogado", usuario);
-            } else if (!todos.isEmpty()) {
-                usuario = todos.get(0);
-                session.setAttribute("usuarioLogado", usuario);
+            } 
+            
+            catch (Exception e) {
+                if (!todos.isEmpty()) {
+                    usuario = todos.get(0);
+                    session.setAttribute("usuarioLogado", usuario);
+                } 
+                
+                else {
+                    session.removeAttribute("usuarioLogado");
+                    usuario = null;
+                }
             }
         }
         return usuario;

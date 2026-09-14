@@ -5,8 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import br.edu.iff.ccc.caronaamiga.dto.VeiculoDTO;
+import br.edu.iff.ccc.caronaamiga.entities.TipoPerfil;
 import br.edu.iff.ccc.caronaamiga.entities.Usuario;
 import br.edu.iff.ccc.caronaamiga.entities.Veiculo;
+import br.edu.iff.ccc.caronaamiga.exception.EntidadeDuplicadaException;
+import br.edu.iff.ccc.caronaamiga.exception.RecursoNaoEncontradoException;
+import br.edu.iff.ccc.caronaamiga.exception.RegraDeNegocioException;
 import br.edu.iff.ccc.caronaamiga.repositories.UsuarioRepositorio;
 import br.edu.iff.ccc.caronaamiga.repositories.VeiculoRepositorio;
 
@@ -21,10 +25,18 @@ public class VeiculoService {
         this.usuarioRepositorio = usuarioRepositorio;
     }
 
-    public void criarVeiculo(VeiculoDTO dto) {
+    public Veiculo criarVeiculo(VeiculoDTO dto) {
+        if (this.veiculoRepositorio.findByPlaca(dto.getPlaca()).isPresent()) {
+            throw new EntidadeDuplicadaException("Já existe um veículo cadastrado com a placa " + dto.getPlaca());
+        }
+
         Usuario motorista = null;
+        
         if(dto.getMotoristaId() != null){
-            motorista = this.usuarioRepositorio.findById(dto.getMotoristaId()).orElse(null);
+            motorista = this.usuarioRepositorio.findById(dto.getMotoristaId()).orElseThrow(() -> new RecursoNaoEncontradoException("Motorista não encontrado com o id: " + dto.getMotoristaId()));
+            if (motorista.getPerfilAtivo() != TipoPerfil.MOTORISTA) {
+                throw new RegraDeNegocioException("O proprietário do veículo deve ter perfil ativo de Motorista.");
+            }
         }
 
         Veiculo novoVeiculo = new Veiculo(
@@ -35,8 +47,10 @@ public class VeiculoService {
             dto.getQuantidadeVagas(),
             motorista
         );
-
+        
         this.veiculoRepositorio.save(novoVeiculo);
+
+        return this.veiculoRepositorio.save(novoVeiculo);
     } 
 
     public List<Veiculo> listarVeiculo() {
@@ -44,7 +58,7 @@ public class VeiculoService {
     }
 
     public Veiculo buscarPorId(Long id) {
-        return this.veiculoRepositorio.findById(id).orElse(null);
+        return this.veiculoRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado com o id: " + id));
     }
 
     public List<Veiculo> listarPorMotoristaId(Long motoristaId){
@@ -53,17 +67,28 @@ public class VeiculoService {
 
     public void atualizarVeiculo(Long id, VeiculoDTO dto) {
         Veiculo veiculo = buscarPorId(id);
-        if (veiculo != null) {
-            veiculo.atualizarDados(dto.getModelo(), dto.getCor(), dto.getPlaca(), dto.getQuantidadeVagas());
-            if (dto.getMotoristaId() != null) {
-                Usuario motorista = this.usuarioRepositorio.findById(dto.getMotoristaId()).orElse(null);
-                veiculo.setMotorista(motorista);
+
+        veiculoRepositorio.findByPlaca(dto.getPlaca()).ifPresent(v -> {
+            if (!v.getId().equals(id)) {
+                throw new EntidadeDuplicadaException("Já existe outro veículo cadastrado com a placa " + dto.getPlaca());
             }
-            this.veiculoRepositorio.save(veiculo);
+        });
+
+        veiculo.atualizarDados(dto.getModelo(), dto.getCor(), dto.getPlaca(), dto.getQuantidadeVagas());
+
+        if (dto.getMotoristaId() != null) {
+            Usuario motorista = this.usuarioRepositorio.findById(dto.getMotoristaId()).orElseThrow(() -> new RecursoNaoEncontradoException("Motorista não encontrado com o id:" + dto.getMotoristaId()));
+
+            if (motorista.getPerfilAtivo() != TipoPerfil.MOTORISTA) {
+                throw new RegraDeNegocioException("O proprietário do veículo deve ter perfil ativo de Motorista.");
+            }
+            veiculo.setMotorista(motorista);
         }
+    this.veiculoRepositorio.save(veiculo);
     }
 
     public void deletarVeiculo(Long id) {
-        this.veiculoRepositorio.deleteById(id);
+        Veiculo veiculo = buscarPorId(id);
+        this.veiculoRepositorio.delete(veiculo);
     }
 }

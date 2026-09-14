@@ -579,3 +579,19 @@ footer {
 footer p {
   margin-bottom: 4px;
 }
+
+/* ==========================================================================
+   Validações & Feedbacks de Formulário (TR06)
+   ========================================================================== */
+.field-error {
+  color: var(--danger);
+  font-size: 0.82rem;
+  margin-top: 5px;
+  display: block;
+  font-weight: 600;
+}
+
+.input-error {
+  border-color: var(--danger) !important;
+  background-color: var(--danger-bg) !important;
+}

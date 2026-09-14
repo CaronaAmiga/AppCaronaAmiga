@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import br.edu.iff.ccc.caronaamiga.dto.UsuarioDTO;
 import br.edu.iff.ccc.caronaamiga.entities.TipoPerfil;
 import br.edu.iff.ccc.caronaamiga.entities.Usuario;
+import br.edu.iff.ccc.caronaamiga.exception.EntidadeDuplicadaException;
+import br.edu.iff.ccc.caronaamiga.exception.RecursoNaoEncontradoException;
 import br.edu.iff.ccc.caronaamiga.repositories.UsuarioRepositorio;
 
 @Service
@@ -18,6 +20,14 @@ public class UsuarioService {
     }
 
     public Usuario cadastrar(UsuarioDTO dto) {
+        if (this.usuarioRepositorio.findByEmailInstitucional(dto.getEmailInstitucional()).isPresent()) {
+            throw new EntidadeDuplicadaException("Já existe um usuário cadastrado com este e-mail institucional.");
+        }
+
+        if (this.usuarioRepositorio.findByMatricula(dto.getMatricula()).isPresent()) {
+            throw new EntidadeDuplicadaException("Já existe um usuário cadastrado com esta matrícula.");
+        }
+        
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNome(dto.getNome());
         novoUsuario.setEmailInstitucional(dto.getEmailInstitucional());
@@ -48,7 +58,7 @@ public class UsuarioService {
     }
 
     public Usuario buscarPorId(Long id){
-        return this.usuarioRepositorio.findById(id).orElse(null);
+        return this.usuarioRepositorio.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com o id: " + id));
     }
 
     public Usuario buscarPorEmail(String email){
@@ -56,7 +66,20 @@ public class UsuarioService {
     }
 
     public void atualizar(Long id, UsuarioDTO dto){
-        Usuario usuarioExistente = this.usuarioRepositorio.findById(id).orElse(null);
+        Usuario usuarioExistente = buscarPorId(id);
+
+        usuarioRepositorio.findByEmailInstitucional(dto.getEmailInstitucional()).ifPresent(u -> {
+            if (!u.getId().equals(id)) {
+                throw new EntidadeDuplicadaException("Já existe outro usuário cadastrado com este e-mail institucional.");
+            }
+        });
+
+        usuarioRepositorio.findByMatricula(dto.getMatricula()).ifPresent(u -> {
+            if (!u.getId().equals(id)) {
+                throw new EntidadeDuplicadaException("Já existe outro usuário cadastrado com esta matrícula.");
+            }
+        });
+        
         if (usuarioExistente != null) {
             usuarioExistente.setNome(dto.getNome());
             usuarioExistente.setEmailInstitucional(dto.getEmailInstitucional());
@@ -75,15 +98,14 @@ public class UsuarioService {
     }
 
     public void deletar(Long id){
-        this.usuarioRepositorio.deleteById(id);
+        Usuario usuario = buscarPorId(id);
+        this.usuarioRepositorio.delete(usuario);
     }
 
     public void alternarPerfil(Long id){
-        Usuario usuario = this.usuarioRepositorio.findById(id).orElse(null);
-        if(usuario != null){
-            usuario.alternarPerfil();
-            this.usuarioRepositorio.save(usuario);
-        }
+        Usuario usuario = buscarPorId(id);
+        usuario.alternarPerfil();
+        this.usuarioRepositorio.save(usuario);
     }
 
     public Usuario autenticar(String email, String senha) {

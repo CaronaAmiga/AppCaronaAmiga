@@ -3,17 +3,60 @@ package br.edu.iff.ccc.caronaamiga.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class CaronaDTO {
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
+@Schema(description = "Dados para cadastro de carona")
+public class CaronaDTO {
+    
+    @Schema(description = "Identificador da carona", example = "1")
     private Long id;
+
+    @Schema(description = "Local de saída", example = "Centro, Campos dos Goytacazes", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "O local de origem é obrigatório.")
+    @Size(min = 3, max = 100, message = "A origem deve ter entre 3 e 100 caracteres.")
     private String origem;
+
+    @Schema(description = "Local de chegada", example = "IFF Campus Guarus", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "O destino é obrigatório.")
+    @Size(min = 3, max = 100, message = "O destino deve ter entre 3 e 100 caracteres.")
     private String destino;
+
+    @Schema(description = "Data da carona (hoje ou futura)", example = "2026-09-15", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "A data da viagem é obrigatória.")
+    @FutureOrPresent(message = "A data da carona deve ser hoje ou uma data futura.")
     private LocalDate data;
+
+    @Schema(description = "Horário previsto de partida", example = "07:30", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "O horário de partida é obrigatório.")
     private LocalTime horarioPartida;
+
+    @Schema(description = "Distância estimada do trajeto em km", example = "12.5", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Positive(message = "A distância estimada deve ser maior que zero.")
     private double quilometragem;
+
+    @Schema(description = "Valor sugerido para rateio dos custos (R$)", example = "5.00")
+    @PositiveOrZero(message = "O valor de rateio não pode ser negativo.")
     private double valorRateio;
+
+    @Schema(description = "Vagas oferecidas na viagem", example = "3")
+    @Min(value = 1, message = "A carona deve oferecer pelo menos 1 vaga.")
+    @Max(value = 8, message = "A carona pode oferecer no máximo 8 vagas.")
     private int vagasDisponiveis;
+
+    @Schema(description = "ID do motorista condutor", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "Selecione o motorista condutor.")
     private Long motoristaId;
+
+    @Schema(description = "ID do veículo a ser utilizado", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "Selecione o veículo da carona.")
     private Long veiculoId;
 
     public CaronaDTO() {

@@ -40,35 +40,41 @@
                 
                 <div class="form-group">
                     <label for="nome">Nome Completo:</label>
-                    <input type="text" id="nome" th:field="*{nome}" required placeholder="Ex: Carlos Silva" />
+                    <input type="text" id="nome" th:field="*{nome}" placeholder="Ex: Carlos Silva" th:classappend="${#fields.hasErrors('nome')} ? 'input-error' : ''" />
+                    <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="field-error"></span>
                 </div>
                 
                 <div class="form-group">
                     <label for="emailInstitucional">E-mail Institucional (@iff.edu.br):</label>
-                    <input type="email" id="emailInstitucional" th:field="*{emailInstitucional}" required placeholder="exemplo@gsuite.iff.edu.br" />
+                    <input type="email" id="emailInstitucional" th:field="*{emailInstitucional}" placeholder="exemplo@gsuite.iff.edu.br" th:classappend="${#fields.hasErrors('emailInstitucional')} ? 'input-error' : ''" />
+                    <span th:if="${#fields.hasErrors('emailInstitucional')}" th:errors="*{emailInstitucional}" class="field-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="senha">Senha de Acesso:</label>
-                    <input type="password" id="senha" th:field="*{senha}" placeholder="Digite sua senha..." />
+                    <input type="password" id="senha" th:field="*{senha}" placeholder="Digite sua senha..." th:classappend="${#fields.hasErrors('senha')} ? 'input-error' : ''" />
+                    <span th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}" class="field-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="matricula">Matrícula Acadêmica:</label>
-                    <input type="text" id="matricula" th:field="*{matricula}" required placeholder="Ex: 202411567898" />
+                    <input type="text" id="matricula" th:field="*{matricula}" placeholder="Ex: 202411567898" th:classappend="${#fields.hasErrors('matricula')} ? 'input-error' : ''" />
+                    <span th:if="${#fields.hasErrors('matricula')}" th:errors="*{matricula}" class="field-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="telefone">Telefone / WhatsApp:</label>
-                    <input type="text" id="telefone" th:field="*{telefone}" required placeholder="Ex: (22) 99999-1111" />
+                    <input type="text" id="telefone" th:field="*{telefone}" placeholder="Ex: (22) 99999-1111" th:classappend="${#fields.hasErrors('telefone')} ? 'input-error' : ''" />
+                    <span th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}" class="field-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="perfilAtivo">Perfil Inicial:</label>
-                    <select id="perfilAtivo" th:field="*{perfilAtivo}">
+                    <select id="perfilAtivo" th:field="*{perfilAtivo}" th:classappend="${#fields.hasErrors('perfilAtivo')} ? 'input-error' : ''">
                         <option value="PASSAGEIRO">Passageiro (Busca caronas)</option>
                         <option value="MOTORISTA">Motorista (Oferece caronas)</option>
                     </select>
+                    <span th:if="${#fields.hasErrors('perfilAtivo')}" th:errors="*{perfilAtivo}" class="field-error"></span>
                 </div>
 
                 <div class="btn-group-center" style="margin-top: 25px;">

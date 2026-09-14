@@ -40,27 +40,31 @@
                 
                 <div class="form-group">
                     <label for="modelo">Modelo do Veículo:</label>
-                    <input type="text" id="modelo" th:field="*{modelo}" required placeholder="Ex: Fiat Uno, Chevrolet Onix..." />
+                    <input type="text" id="modelo" th:field="*{modelo}" placeholder="Ex: Fiat Uno, Chevrolet Onix..." th:classappend="${#fields.hasErrors('modelo')} ? 'input-error' : ''" />
+                    <span th:if="${#fields.hasErrors('modelo')}" th:errors="*{modelo}" class="field-error"></span>
                 </div>
                 
                 <div class="form-group">
                     <label for="cor">Cor do Carro:</label>
-                    <input type="text" id="cor" th:field="*{cor}" required placeholder="Ex: Prata, Branco, Preto..." />
+                    <input type="text" id="cor" th:field="*{cor}" placeholder="Ex: Prata, Branco, Preto..." th:classappend="${#fields.hasErrors('cor')} ? 'input-error' : ''" />
+                    <span th:if="${#fields.hasErrors('cor')}" th:errors="*{cor}" class="field-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="placa">Placa do Veículo:</label>
-                    <input type="text" id="placa" th:field="*{placa}" required placeholder="Ex: ABC-1234 ou ABC1D23" />
+                    <input type="text" id="placa" th:field="*{placa}" placeholder="Ex: ABC-1234 ou ABC1D23" th:classappend="${#fields.hasErrors('placa')} ? 'input-error' : ''" />
+                    <span th:if="${#fields.hasErrors('placa')}" th:errors="*{placa}" class="field-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="quantidadeVagas">Quantidade de Vagas Disponíveis:</label>
-                    <input type="number" id="quantidadeVagas" th:field="*{quantidadeVagas}" min="1" max="8" required placeholder="Ex: 4" />
+                    <input type="number" id="quantidadeVagas" th:field="*{quantidadeVagas}" placeholder="Ex: 4" th:classappend="${#fields.hasErrors('quantidadeVagas')} ? 'input-error' : ''" />
+                    <span th:if="${#fields.hasErrors('quantidadeVagas')}" th:errors="*{quantidadeVagas}" class="field-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="motoristaId">Motorista Proprietário:</label>
-                    <select id="motoristaId" th:field="*{motoristaId}" required>
+                    <select id="motoristaId" th:field="*{motoristaId}" th:classappend="${#fields.hasErrors('motoristaId')} ? 'input-error' : ''">
                         <option value="">-- Selecione o Aluno Motorista --</option>
                         <option th:each="user : ${usuarios}" 
                                 th:value="${user.id}" 
@@ -68,6 +72,7 @@
                             Carlos Silva
                         </option>
                     </select>
+                    <span th:if="${#fields.hasErrors('motoristaId')}" th:errors="*{motoristaId}" class="field-error"></span>
                 </div>
 
                 <div class="btn-group-center" style="margin-top: 25px;">

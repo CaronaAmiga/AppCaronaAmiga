@@ -53,7 +53,7 @@
                 
                 <div class="form-group">
                     <label for="motoristaId"><i class="fa-solid fa-user"></i> Motorista Condutor:</label>
-                    <select id="motoristaId" th:field="*{motoristaId}" required>
+                    <select id="motoristaId" th:field="*{motoristaId}" th:classappend="${#fields.hasErrors('motoristaId')} ? 'input-error' : ''">
                         <option value="">-- Selecione o Motorista --</option>
                         <option th:each="user : ${motoristas}" 
                                 th:value="${user.id}" 
@@ -62,6 +62,7 @@
                             Carlos Silva
                         </option>
                     </select>
+                    <span th:if="${#fields.hasErrors('motoristaId')}" th:errors="*{motoristaId}" class="field-error"></span>
                     <small th:if="${#lists.isEmpty(motoristas)}" style="color: #DC2626; font-size: 0.8rem; margin-top: 4px; display: block;">
                         Nenhum motorista cadastrado no sistema. <a href="/usuarios">Alterne um perfil para Motorista aqui</a>.
                     </small>
@@ -69,7 +70,7 @@
 
                 <div class="form-group">
                     <label for="veiculoId"><i class="fa-solid fa-car"></i> Veículo do Motorista:</label>
-                    <select id="veiculoId" th:field="*{veiculoId}" required>
+                    <select id="veiculoId" th:field="*{veiculoId}" th:classappend="${#fields.hasErrors('veiculoId')} ? 'input-error' : ''">
                         <option value="">-- Selecione o Veículo do Condutor --</option>
                         <option th:each="v : ${veiculos}" 
                                 th:value="${v.id}" 
@@ -78,6 +79,7 @@
                             Fiat Uno
                         </option>
                     </select>
+                    <span th:if="${#fields.hasErrors('veiculoId')}" th:errors="*{veiculoId}" class="field-error"></span>
                     
                     <!-- Alerta caso o motorista selecionado não possua veículo cadastrado -->
                     <div id="noVehicleAlert" style="display: none; margin-top: 8px; padding: 10px; background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: var(--radius-sm); font-size: 0.85rem; color: #991B1B;">
@@ -89,43 +91,50 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
                         <label for="origem"><i class="fa-solid fa-location-dot"></i> Local de Origem:</label>
-                        <input type="text" id="origem" th:field="*{origem}" required placeholder="Ex: Praça do Centro" />
+                        <input type="text" id="origem" th:field="*{origem}" placeholder="Ex: Praça do Centro" th:classappend="${#fields.hasErrors('origem')} ? 'input-error' : ''" />
+                        <span th:if="${#fields.hasErrors('origem')}" th:errors="*{origem}" class="field-error"></span>
                     </div>
                     
                     <div class="form-group">
                         <label for="destino"><i class="fa-solid fa-flag-checkered"></i> Campus / Destino:</label>
-                        <input type="text" id="destino" th:field="*{destino}" required placeholder="Ex: Campus IFF Guarus" />
+                        <input type="text" id="destino" th:field="*{destino}" placeholder="Ex: Campus IFF Guarus" th:classappend="${#fields.hasErrors('destino')} ? 'input-error' : ''" />
+                        <span th:if="${#fields.hasErrors('destino')}" th:errors="*{destino}" class="field-error"></span>
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
                         <label for="data"><i class="fa-regular fa-calendar"></i> Data da Viagem:</label>
-                        <input type="date" id="data" th:field="*{data}" required />
+                        <input type="date" id="data" th:field="*{data}" th:classappend="${#fields.hasErrors('data')} ? 'input-error' : ''" />
+                        <span th:if="${#fields.hasErrors('data')}" th:errors="*{data}" class="field-error"></span>
                     </div>
 
                     <div class="form-group">
                         <label for="horarioPartida"><i class="fa-regular fa-clock"></i> Horário de Partida:</label>
-                        <input type="time" id="horarioPartida" th:field="*{horarioPartida}" required />
+                        <input type="time" id="horarioPartida" th:field="*{horarioPartida}" th:classappend="${#fields.hasErrors('horarioPartida')} ? 'input-error' : ''" />
+                        <span th:if="${#fields.hasErrors('horarioPartida')}" th:errors="*{horarioPartida}" class="field-error"></span>
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
                         <label for="quilometragem"><i class="fa-solid fa-route"></i> Distância Estimada (Km):</label>
-                        <input type="number" step="0.1" id="quilometragem" th:field="*{quilometragem}" required placeholder="Ex: 15.0" />
+                        <input type="number" step="0.1" id="quilometragem" th:field="*{quilometragem}" placeholder="Ex: 15.0" th:classappend="${#fields.hasErrors('quilometragem')} ? 'input-error' : ''" />
+                        <span th:if="${#fields.hasErrors('quilometragem')}" th:errors="*{quilometragem}" class="field-error"></span>
                         <small style="color: var(--neutral); font-size: 0.78rem;">Calcula rateio automático (RF-008)</small>
                     </div>
 
                     <div class="form-group">
                         <label for="vagasDisponiveis"><i class="fa-solid fa-users"></i> Vagas Oferecidas:</label>
-                        <input type="number" id="vagasDisponiveis" th:field="*{vagasDisponiveis}" min="1" max="8" placeholder="3" />
+                        <input type="number" id="vagasDisponiveis" th:field="*{vagasDisponiveis}" min="1" max="8" placeholder="3" th:classappend="${#fields.hasErrors('vagasDisponiveis')} ? 'input-error' : ''" />
+                        <span th:if="${#fields.hasErrors('vagasDisponiveis')}" th:errors="*{vagasDisponiveis}" class="field-error"></span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="valorRateio"><i class="fa-solid fa-coins"></i> Valor do Rateio R$ (Opcional - Deixe 0 para cálculo automático):</label>
-                    <input type="number" step="0.50" id="valorRateio" th:field="*{valorRateio}" value="0" />
+                    <input type="number" step="0.50" id="valorRateio" th:field="*{valorRateio}" value="0" th:classappend="${#fields.hasErrors('valorRateio')} ? 'input-error' : ''" />
+                    <span th:if="${#fields.hasErrors('valorRateio')}" th:errors="*{valorRateio}" class="field-error"></span>
                 </div>
 
                 <div class="btn-group-center" style="margin-top: 25px;">
